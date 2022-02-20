@@ -78,6 +78,8 @@ void	compile(const char *src, const char *dst)
  	 *				replace match, and retry on same index
  	 *			else
  	 *				try an other macro
+	 *
+	 *	reset counter and repeat until no more change or deepth max
  	 *
  	 */
 	close(src_fd);
