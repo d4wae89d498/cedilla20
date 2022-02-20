@@ -1,0 +1,44 @@
+#import <ç>
+#import <ft>
+
+macro struct
+{
+	int	comment				:1;
+	int	comments			:1;
+	int	quote				:1;
+	int	quotes				:1;
+	int	escaped				:1;
+	int	parentheses_level	:16;
+	int	brackets_level		:16;
+	int	braces_level		:16;
+}		c_ctx;
+
+macro	rule(const char *s, size_t i)
+{
+	char	name[255];
+	char	*o;
+
+	i = 0;
+	while (s[i] == "Hello"[i])
+	{
+		i += 1;
+	}
+	while (s[i] != '.' && i < 12)
+	{
+		name[i] = s[i];
+		i += 1;
+	}
+	name[i] = 0;
+	if (s[i] == '.')
+	{
+		asprintf(&o, "Hello %s!", name);
+		return (o);
+	}
+	else
+		return (0);
+}
+
+int	main(void)
+{
+	printf("Hello joe.");
+}

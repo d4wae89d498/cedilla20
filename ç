@@ -1,0 +1,5 @@
+#ifndef CEDILLE_H
+# define CEDILLE_H
+# define macro	
+# define rule	char* a 
+#endif

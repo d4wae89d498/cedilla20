@@ -1,0 +1,38 @@
+#ifndef FT_H
+# define FT_H
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <string.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# define _(...) #__VA_ARGS__
+
+static void mkpath(const char *dir);
+
+static void mkpath(const char *dir)
+{
+    char tmp[256];
+    char *p = NULL;
+    size_t len;
+
+    snprintf(tmp, sizeof(tmp),"%s",dir);
+    len = strlen(tmp);
+    if (tmp[len - 1] == '/')
+        tmp[len - 1] = 0;
+    p = tmp + 1;
+	while(*p)
+	{
+        if (*p == '/')
+		{
+            *p = 0;
+            mkdir(tmp, S_IRWXU);
+            *p = '/';
+        }
+		p += 1;
+	}
+}
+
+#endif
