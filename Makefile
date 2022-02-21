@@ -16,5 +16,6 @@ clean:
 	rm -rf b.txt
 	rm -rf spec.c
 	rm -rf spec_compiler.c
+	rm -rf a.out
 fclean:	clean
 	rm -rf çc

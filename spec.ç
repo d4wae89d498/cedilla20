@@ -13,21 +13,24 @@ macro struct
 	int	braces_level		:16;
 }		c_ctx;
 
-macro	rule(const char *s, size_t i)
+macro	rule(const char *s, size_t l)
 {
 	char	name[255];
 	char	*o;
+	size_t	i;
 
 	i = 0;
-	while (s[i] == "Hello"[i])
+	while (i < l && s[i] == "Hello"[i])
 	{
 		i += 1;
 	}
-	while (s[i] != '.' && i < 12)
+	while (i < l && s[i] != '.' && i < 12)
 	{
 		name[i] = s[i];
 		i += 1;
 	}
+	if (i > l)
+		return (0);
 	name[i] = 0;
 	if (s[i] == '.')
 	{
