@@ -5,9 +5,9 @@ typedef struct macros
 	int x;
 }	t_macros;
 
-t_macros	parse(const char *src)
+t_macros	parse(const char *path)
 {
-	char		*str				;
+	char		*src_str			;
 	struct stat buf					;
 	off_t		size				;
 	size_t		i					;
@@ -18,8 +18,8 @@ t_macros	parse(const char *src)
 		int	brackets				:16;
 		int	braces					:16;
 		int	lines					:16;
-		int	cols					:16
-	}			level = {0,0,0,0, 0};
+		int	cols					:16;
+	}			level = {0,0,0,1,1};
 	struct
 	{
 		int	comment					:1;
@@ -30,73 +30,80 @@ t_macros	parse(const char *src)
 		int	cpp						:1;
 		int	rule					:1;
 	}			is = {0, 0, 0, 0, 0, 0, 0};
+	int			src_fd;
 
-	src_fd = open(src, O_RDONLY);
+	src_fd = open(path, O_RDONLY);
 	fstat(src_fd, &buf);
 	size = buf.st_size;
-	str = malloc(size);
+	src_str = malloc(size);
 	read(src_fd, src_str, size);
 	i = 0;
 	while (i < size)
 	{
 		remaining = size - i;
-		if (ctx.macro)+
+		/*if (is.macro)
+		{
+
+		}*/
 
 
-		if (str[i] == '\n')
+		if (src_str[i] == '\n')
 		{
 			if (!is.escaped)
 			{
-				first_of_line = 1;
+				level.cols = 1;
+				level.lines += 1;
 				is.comment = 0;
 				is.quote = 0;
 				is.cpp = 0;
 			}
 		}
-		else if (str[i] == '\\')
+		else if (src_str[i] == '\\')
 			is.escaped = 1;
-		else if (str[i] == '(' && !is.quote && !is.quotes && !is.comment && !is.comments)
-			ctx.parentheses_level += 1;
-		else if (str[i] == '[' && !is.quote && !is.quotes && !is.comment && !is.comments)
-			ctx.brackets_level += 1;
-		else if (str[i] == '{' && !is.quote && !is.quotes && !is.comment && !is.comments)
-			ctx.braces += 1;
-		else if (str[i] == ')' && !is.quote && !is.quotes && !is.comment && !is.comments)
-			ctx.parentheses_level -= 1;
-		else if (str[i] == ']' && !is.quote && !is.quotes && !is.comment && !is.comments)
-			ctx.brackets_level -= 1;
-		else if (str[i] == '}' && !is.quote && !is.quotes && !is.comment && !is.comments)
+		else if (src_str[i] == '(' && !is.quote && !is.quotes && !is.comment && !is.comments)
+			level.parentheses += 1;
+		else if (src_str[i] == '[' && !is.quote && !is.quotes && !is.comment && !is.comments)
+			level.brackets += 1;
+		else if (src_str[i] == '{' && !is.quote && !is.quotes && !is.comment && !is.comments)
+			level.braces += 1;
+		else if (src_str[i] == ')' && !is.quote && !is.quotes && !is.comment && !is.comments)
+			level.parentheses -= 1;
+		else if (src_str[i] == ']' && !is.quote && !is.quotes && !is.comment && !is.comments)
+			level.brackets -= 1;
+		else if (src_str[i] == '}' && !is.quote && !is.quotes && !is.comment && !is.comments)
 		{
-			ctx.braces -= 1;
-			if (!ctx.braces)
-				is.macro = 0;
+			level.braces -= 1;
+		/*	if (!level.braces)
+				is.macro = 0;*/
 		}
-		else if (!level.lines && str[i] == '#' && 
-				!comment && !comments && !quote && !quotes)
+		else if (!level.lines && src_str[i] == '#' && 
+				!is.comment && !is.comments && !is.quote && !is.quotes)
 			is.cpp = 1;
-		else if (str[i] == '\'' && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
+		else if (src_str[i] == '\'' && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
 			is.quote = 1;
-		else if (str[i] == '"'  && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
+		else if (src_str[i] == '"'  && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
 			is.quotes = 1;
-		else if (remaing > 2 && !strcmp(str + i, "//") && !is.comment && !is.quote && !is.quotes && !is.comments)
+		else if (remaining > 2 && !strcmp(src_str + i, "//") && !is.comment && !is.quote && !is.quotes && !is.comments)
 			is.comment = 1;
-		else if (!strcmp(str + i, "/*") && !is.comment && !is.quote && !is.quotes && !is.comments)
+		else if (!strcmp(src_str + i, "/*") && !is.comment && !is.quote && !is.quotes && !is.comments)
 			is.comments = 1;
-		else if (!strcmp(str + i, "*/") && is.comments)
+		else if (!strcmp(src_str + i, "*/") && is.comments)
 			is.comments = 0;
 	//	else if (remaining > 5 && !strcmp(str + i, "macro"))
 //		{
 //		}
-		else if (remaining > 5 && !strcmp(str + i, "rule") && !ctx.comment && !ctx.comments && !ctx.quote && !ctx.quotes)
+		else if (remaining > 5 && !strcmp(src_str + i, "rule") && !is.comment && !is.comments && !is.quote && !is.quotes)
 		{
-			is.macro = 1;
+			//is.macro = 1;
 		}
 		else if (is.cpp && remaining > 6 && 
-				!strcmp(str + i, "import"))
+				!strcmp(src_str + i, "import"))
 		{}
-		first_of_line = 0;
+		if (!(src_str[i] == '\n') && !is.escaped)
+			level.cols += 1;
 		i += 1;
 	} 
+	close(src_fd);
 	return ((t_macros) {0});
 }
 
@@ -111,8 +118,7 @@ void	compile(const char *src, const char *dst)
 	(
 	 	dst_fd,
 	 	_(
-\x23line 115 compiler.c\n\
-			/*
+/*
  *============================================================
  *	B E G I N   O F   G E N E R A T E D   S E C T I O N
  *============================================================
@@ -120,7 +126,6 @@ void	compile(const char *src, const char *dst)
 \x23include <ft>\n
 
 %s
-\x23line 124 compiler.c\n\
 
 void	compile(const char *src, const char *dst)
 {
@@ -181,7 +186,6 @@ int		main(int ac, char **av)
 	 	"", ""
 	);
 
-	close(src_fd);
 	close(dst_fd);
 }
 
