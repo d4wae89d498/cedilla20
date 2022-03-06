@@ -1,5 +1,8 @@
 #ifndef CEDILLE_H
 # define CEDILLE_H
 # define macro	
-# define rule	char* a 
+# define tcopy2(x, y) x##y
+# define tcopy(x, y) tcopy2(c, y)
+# define rule	char *
+// tcopy(rule, __LINE__) 
 #endif

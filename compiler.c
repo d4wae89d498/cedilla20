@@ -1,11 +1,37 @@
 #include <ft>
 
-typedef struct macros
+
+int	is_token(int remaining, char *begin, char *word)
 {
-	int x;
+	int	i;
+
+	i = 0;
+	while (remaining > i && word[i] && begin[i] == word[i])
+		i += 1;
+	if (!word[i])
+		return (1);
+	return (0);
+}
+
+int	is_word(int remaining, char *begin, char *word)
+{
+	int	i;
+
+	i = 0;
+	while (remaining > i && word[i] && begin[i] == word[i])
+		i += 1;
+	if (!word[i] && !isalpha(begin[i]))
+		return (1);
+	return (0);
+}
+
+typedef struct s_macros
+{
+	char			*data;
+	struct s_macros	*next;
 }	t_macros;
 
-t_macros	parse(const char *path)
+t_macros	*parse(const char *path)
 {
 	char		*src_str			;
 	struct stat buf					;
@@ -29,9 +55,16 @@ t_macros	parse(const char *path)
 		int	escaped					:1;
 		int	cpp						:1;
 		int	rule					:1;
-	}			is = {0, 0, 0, 0, 0, 0, 0};
+		//
+		int	macro					:1;
+	}			is = {0, 0, 0, 0, 0, 0, 0, 0};
 	int			src_fd;
+	t_macros	*macros;
+	char		macro_name[1024];
+	size_t		macro_name_i;
 
+	printf("parsing: %s...\n", path);
+	macros = 0;
 	src_fd = open(path, O_RDONLY);
 	fstat(src_fd, &buf);
 	size = buf.st_size;
@@ -41,10 +74,18 @@ t_macros	parse(const char *path)
 	while (i < size)
 	{
 		remaining = size - i;
-		/*if (is.macro)
+		if (is.macro)
 		{
-
-		}*/
+			macro_name[macro_name_i] = src_str[i];
+			if (src_str[i] == '(')
+			{
+				macro_name[macro_name_i] = 0;	
+				is.macro = 0;
+				list_add(&macros, strdup(macro_name));
+			}
+			else
+				macro_name_i += 1;
+		}
 
 
 		if (src_str[i] == '\n')
@@ -92,26 +133,42 @@ t_macros	parse(const char *path)
 	//	else if (remaining > 5 && !strcmp(str + i, "macro"))
 //		{
 //		}
-		else if (remaining > 5 && !strcmp(src_str + i, "rule") && !is.comment && !is.comments && !is.quote && !is.quotes)
+		else if (is_word(remaining, src_str + i, "rule") && !is.comment && !is.comments && !is.quote && !is.quotes)
 		{
-			//is.macro = 1;
+			macro_name_i = 0;	
+			is.macro = 1;
+			printf("rule found!\n");
 		}
 		else if (is.cpp && remaining > 6 && 
 				!strcmp(src_str + i, "import"))
-		{}
+		{
+			//parse and append macros
+		}
 		if (!(src_str[i] == '\n') && !is.escaped)
 			level.cols += 1;
 		i += 1;
-	} 
+	}
+	printf("i=%zu\n", i);
 	close(src_fd);
-	return ((t_macros) {0});
+	return (macros);
+}
+
+static void	list_macros(t_macros *macros)
+{
+	while (macros)
+	{
+		printf("-- macro rule %s (char*, size_t);", macros->data);
+		macros = macros->next;
+	}
 }
 
 void	compile(const char *src, const char *dst)
 {
 	int			dst_fd;
-	t_macros	macros;
+	t_macros	*macros;
 
+	macros = parse(src);
+	list_macros(macros);
 	mkpath(dst);
 	dst_fd = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dprintf
@@ -123,7 +180,7 @@ void	compile(const char *src, const char *dst)
  *	B E G I N   O F   G E N E R A T E D   S E C T I O N
  *============================================================
  */
-\x23include <ft>\n
+\n\x23 include <ft>\n
 
 %s
 
@@ -164,6 +221,24 @@ void	compile(const char *src, const char *dst)
 	 *	reset counter and repeat until no more change or deepth max
  	 *
  	 */
+\n\x23 define P _\n
+	dprintf
+	(
+	 	dst_fd,
+		P(
+			\\x23include <ft>\\x20 \\n
+
+
+			%%s
+
+			int main()
+			{
+				printf("ok!\n");
+			}
+		),
+		""
+	);
+
 	close(src_fd);
 	close(dst_fd);
 }
@@ -193,6 +268,7 @@ int		main(int ac, char **av)
 {
 	if (ac  != 3)
 		return (!!printf("Error: usage %s <source.ç> <dest.c>\n", av[0]));
+	printf("strcmp AVION AVIO\\x0 = %i\n", strcmp("avion", "avion2"));
 	compile(av[1], av[2]);
 	return (0);
 }

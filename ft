@@ -35,4 +35,48 @@ static void mkpath(const char *dir)
 	}
 }
 
+typedef struct s_list
+{
+	void			*data;
+	struct s_list	*next;
+}	t_list;
+
+void	list_add(void *listd, void *data)
+{
+	t_list	*it;
+	t_list	**list;
+
+	list = (void*) listd;
+	it = *list;
+	if (!it)
+	{
+		it = malloc(sizeof(t_list));
+		it->next = 0;
+		it->data = data;
+		*list = it;
+		return ;
+	}
+	while (it->next)
+		it = it->next;
+	it->next = malloc(sizeof(t_list));
+	it->next->next = 0;
+	it->next->data = data;
+}
+
+void	list_clear(t_list **list, void (*f)(void*))
+{
+	t_list	*it;
+	t_list	*swp;
+
+	it = *list;
+	while (it)
+	{
+		swp = it->next;
+		if (f)
+			f(it->data);
+		free(it);
+		it = swp;
+	}
+}
+
 #endif

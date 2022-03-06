@@ -1,5 +1,5 @@
-#import <ç>
-#import <ft>
+# import <ç>
+# import <ft>
 
 macro struct
 {
@@ -13,7 +13,12 @@ macro struct
 	int	braces_level		:16;
 }		c_ctx;
 
-macro	rule(const char *s, size_t l)
+macro rule	test(const char *s, size_t l)
+{
+	return (0);
+}
+
+macro rule	lol(const char *s, size_t l)
 {
 	char	name[255];
 	char	*o;
