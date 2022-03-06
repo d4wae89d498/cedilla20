@@ -1,6 +1,11 @@
 cc -g -I. compiler.c -o çc
 ./çc spec.ç spec_compiler.c
 parsing: spec.ç...
+import=ç
+parsing: ç...
+import=ft
+parsing: ft...
+-- macro rule: test42 (char*, size_t);
 -- macro rule: test (char*, size_t);
 -- macro rule: lol (char*, size_t);
 cc -I. spec_compiler.c -o spec_compiler
