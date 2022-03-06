@@ -5,9 +5,12 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <string.h>
+# include <ctype.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# define after(...)
+# define before(...)
 # define _(...) #__VA_ARGS__
 
 static void mkpath(const char *dir);

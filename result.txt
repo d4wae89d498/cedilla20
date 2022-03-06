@@ -1,0 +1,9 @@
+cc -g -I. compiler.c -o çc
+./çc spec.ç spec_compiler.c
+parsing: spec.ç...
+-- macro rule: test (char*, size_t);
+-- macro rule: lol (char*, size_t);
+cc -I. spec_compiler.c -o spec_compiler
+./spec_compiler spec.ç spec.c
+cc -I. spec.c && ./a.out
+ok!

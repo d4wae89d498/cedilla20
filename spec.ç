@@ -19,6 +19,7 @@ macro rule	test(const char *s, size_t l)
 }
 
 macro rule	lol(const char *s, size_t l)
+after(test) before(last)
 {
 	char	name[255];
 	char	*o;

@@ -1,5 +1,5 @@
 all:
-	cc -I. compiler.c -o çc
+	cc -g -I. compiler.c -o çc
 	./çc spec.ç spec_compiler.c
 	cc -I. spec_compiler.c -o spec_compiler
 	./spec_compiler spec.ç spec.c

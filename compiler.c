@@ -55,8 +55,11 @@ t_macros	*parse(const char *path)
 		int	escaped					:1;
 		int	cpp						:1;
 		int	rule					:1;
-		//
-		int	macro					:1;
+		/**
+		 *	macro -> -1
+		 *	macro rules -> 1
+		 */
+		int	macro					:2;
 	}			is = {0, 0, 0, 0, 0, 0, 0, 0};
 	int			src_fd;
 	t_macros	*macros;
@@ -74,7 +77,7 @@ t_macros	*parse(const char *path)
 	while (i < size)
 	{
 		remaining = size - i;
-		if (is.macro)
+		if (is.macro == 1)
 		{
 			macro_name[macro_name_i] = src_str[i];
 			if (src_str[i] == '(')
@@ -102,7 +105,11 @@ t_macros	*parse(const char *path)
 		else if (src_str[i] == '\\')
 			is.escaped = 1;
 		else if (src_str[i] == '(' && !is.quote && !is.quotes && !is.comment && !is.comments)
+		{
+			if (is.macro && !level.parentheses)
+				is.macro = 0;
 			level.parentheses += 1;
+		}
 		else if (src_str[i] == '[' && !is.quote && !is.quotes && !is.comment && !is.comments)
 			level.brackets += 1;
 		else if (src_str[i] == '{' && !is.quote && !is.quotes && !is.comment && !is.comments)
@@ -112,11 +119,7 @@ t_macros	*parse(const char *path)
 		else if (src_str[i] == ']' && !is.quote && !is.quotes && !is.comment && !is.comments)
 			level.brackets -= 1;
 		else if (src_str[i] == '}' && !is.quote && !is.quotes && !is.comment && !is.comments)
-		{
 			level.braces -= 1;
-		/*	if (!level.braces)
-				is.macro = 0;*/
-		}
 		else if (!level.lines && src_str[i] == '#' && 
 				!is.comment && !is.comments && !is.quote && !is.quotes)
 			is.cpp = 1;
@@ -124,20 +127,24 @@ t_macros	*parse(const char *path)
 			is.quote = 1;
 		else if (src_str[i] == '"'  && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
 			is.quotes = 1;
-		else if (remaining > 2 && !strcmp(src_str + i, "//") && !is.comment && !is.quote && !is.quotes && !is.comments)
+		else if (is_token(remaining, src_str + i, "//") && !is.comment && !is.quote && !is.quotes && !is.comments)
 			is.comment = 1;
-		else if (!strcmp(src_str + i, "/*") && !is.comment && !is.quote && !is.quotes && !is.comments)
+		else if (is_token(remaining, src_str + i, "/*") && !is.comment && !is.quote && !is.quotes && !is.comments)
 			is.comments = 1;
-		else if (!strcmp(src_str + i, "*/") && is.comments)
+		else if (is_token(remaining, src_str + i, "*/") && is.comments)
 			is.comments = 0;
-	//	else if (remaining > 5 && !strcmp(str + i, "macro"))
-//		{
-//		}
-		else if (is_word(remaining, src_str + i, "rule") && !is.comment && !is.comments && !is.quote && !is.quotes)
+		else if (is_word(remaining, src_str + i, "macro"))
 		{
+			is.macro = -1;
+		}
+		else if (
+				is.macro == -1
+				&&	is_word(remaining, src_str + i, "rule") 
+				&& !is.comment && !is.comments && !is.quote && !is.quotes)
+		{
+			i += 4;
 			macro_name_i = 0;	
 			is.macro = 1;
-			printf("rule found!\n");
 		}
 		else if (is.cpp && remaining > 6 && 
 				!strcmp(src_str + i, "import"))
@@ -148,7 +155,6 @@ t_macros	*parse(const char *path)
 			level.cols += 1;
 		i += 1;
 	}
-	printf("i=%zu\n", i);
 	close(src_fd);
 	return (macros);
 }
@@ -157,7 +163,7 @@ static void	list_macros(t_macros *macros)
 {
 	while (macros)
 	{
-		printf("-- macro rule %s (char*, size_t);", macros->data);
+		printf("-- macro rule: %s (char*, size_t);\n", macros->data);
 		macros = macros->next;
 	}
 }
@@ -268,7 +274,6 @@ int		main(int ac, char **av)
 {
 	if (ac  != 3)
 		return (!!printf("Error: usage %s <source.ç> <dest.c>\n", av[0]));
-	printf("strcmp AVION AVIO\\x0 = %i\n", strcmp("avion", "avion2"));
 	compile(av[1], av[2]);
 	return (0);
 }
