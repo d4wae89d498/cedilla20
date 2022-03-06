@@ -18,8 +18,9 @@ macro rule	test(const char *s, size_t l)
 	return (0);
 }
 
+
+// after(test) before(last) priority(max) // priority(int) or a css's !important alike ?
 macro rule	lol(const char *s, size_t l)
-after(test) before(last) priority(max) // priority(int) or a css's !important alike ?
 {
 	char	name[255];
 	char	*o;

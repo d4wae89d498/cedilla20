@@ -5,4 +5,9 @@
 # define tcopy(x, y) tcopy2(c, y)
 # define rule	char *
 // tcopy(rule, __LINE__) 
+
+macro rule test42(const char *s, size_t l)
+{
+	return (0);
+}
 #endif

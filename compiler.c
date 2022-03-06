@@ -120,9 +120,11 @@ t_macros	*parse(const char *path)
 			level.brackets -= 1;
 		else if (src_str[i] == '}' && !is.quote && !is.quotes && !is.comment && !is.comments)
 			level.braces -= 1;
-		else if (!level.lines && src_str[i] == '#' && 
+		else if (src_str[i] == '#' &&
 				!is.comment && !is.comments && !is.quote && !is.quotes)
+		{	
 			is.cpp = 1;
+		}
 		else if (src_str[i] == '\'' && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
 			is.quote = 1;
 		else if (src_str[i] == '"'  && !is.escaped && !is.quote && !is.quotes && is.comment && !is.comments)
@@ -139,17 +141,44 @@ t_macros	*parse(const char *path)
 		}
 		else if (
 				is.macro == -1
-				&&	is_word(remaining, src_str + i, "rule") 
+				&&	is_word(remaining, src_str + i, "rule")
 				&& !is.comment && !is.comments && !is.quote && !is.quotes)
 		{
 			i += 4;
 			macro_name_i = 0;	
 			is.macro = 1;
 		}
-		else if (is.cpp && remaining > 6 && 
-				!strcmp(src_str + i, "import"))
+		else if (is.cpp && is_token(remaining, src_str + i, "import"))
 		{
-			//parse and append macros
+			t_macros	*tmp;
+			char		import_buffer[1024];
+			int			y;
+			int			p;
+
+			i += 6;
+			remaining -= 6;
+			y = 0;
+			p = 0;
+			while (remaining)
+			{
+				if (src_str[i] == '<' || src_str[i] == '"')
+					p = 1;
+				else if (p && src_str[i] == '>' || src_str[i] == '"')
+					break ;	
+				else if (p)
+					import_buffer[y++] = src_str[i];
+				remaining -= 1;
+				i += 1;
+			}
+			import_buffer[y + 1] = 0;
+			printf("import=%s\n", import_buffer);
+			tmp = parse(import_buffer);
+			while(tmp)
+			{
+				list_add(&macros, tmp->data);
+				tmp = tmp->next;
+			}
+			list_clear((void*)&tmp, 0);
 		}
 		if (!(src_str[i] == '\n') && !is.escaped)
 			level.cols += 1;
