@@ -17,5 +17,6 @@ clean:
 	rm -rf spec.c
 	rm -rf spec_compiler.c
 	rm -rf a.out
+	rm -rf *.dSYM
 fclean:	clean
 	rm -rf çc

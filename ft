@@ -9,9 +9,9 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# define after(...)
-# define before(...)
-# define _(...) #__VA_ARGS__
+
+# define auto __auto_type
+# define __(...) #__VA_ARGS__
 
 static void mkpath(const char *dir);
 

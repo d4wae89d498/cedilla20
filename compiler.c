@@ -216,7 +216,7 @@ static void	list_macros(t_macros *macros)
 {
 	while (macros)
 	{
-		printf("-- macro rule: %s (char*, size_t);\n", macros->data);
+		printf("-- macro rule: %s;\n", macros->data);
 		macros = macros->next;
 	}
 }
@@ -228,20 +228,21 @@ void	compile(const char *src, const char *dst)
 
 	macros = parse(src);
 	list_macros(macros);
+	printf("generating intermediate compiler: %s...\n", dst);
 	mkpath(dst);
 	dst_fd = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dprintf
 	(
 	 	dst_fd,
-	 	_(
+	 	__(
 /*
  *============================================================
  *	B E G I N   O F   G E N E R A T E D   S E C T I O N
  *============================================================
  */
-\n\x23 include <ft>\n
 
-%s
+\x20\x23 include <ft>\n
+
 
 void	compile(const char *src, const char *dst)
 {
@@ -252,6 +253,7 @@ void	compile(const char *src, const char *dst)
 	off_t		size;
 	size_t		i;
 
+	printf("Translating %%s -> %%s\n", src, dst);
 	src_fd = open(src, O_RDONLY);
 	mkpath(dst);
 	dst_fd = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -262,7 +264,11 @@ void	compile(const char *src, const char *dst)
 	i = 0;
 	while (i < size)
 	{
-		%s
+		
+		 printf("%s\n");
+		
+			
+
 		i += 1;
 	}
 	/* 
@@ -280,7 +286,7 @@ void	compile(const char *src, const char *dst)
 	 *	reset counter and repeat until no more change or deepth max
  	 *
  	 */
-\n\x23 define P _\n
+\n\x23 define P __\n
 	dprintf
 	(
 	 	dst_fd,
@@ -317,7 +323,7 @@ int		main(int ac, char **av)
  */
 }
 		), 
-	 	"", ""
+	 	"macrossss"
 	);
 
 	close(dst_fd);
