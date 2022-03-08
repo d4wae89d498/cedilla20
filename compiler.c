@@ -1,5 +1,10 @@
 #include <ft>
-
+#ifndef MACRO_SIZE
+# define MACRO_SIZE 1024
+#endif
+#ifndef IMPORT_SIZE
+# define IMPORT_SIZE 1024
+#endif
 
 int	is_token(int remaining, char *begin, char *word)
 {
@@ -63,7 +68,7 @@ t_macros	*parse(const char *path)
 	}			is = {0, 0, 0, 0, 0, 0, 0, 0};
 	int			src_fd;
 	t_macros	*macros;
-	char		macro_name[1024];
+	char		macro_name[MACRO_SIZE];
 	size_t		macro_name_i;
 
 	printf("parsing: %s...\n", path);
@@ -79,15 +84,24 @@ t_macros	*parse(const char *path)
 		remaining = size - i;
 		if (is.macro == 1)
 		{
-			macro_name[macro_name_i] = src_str[i];
-			if (src_str[i] == '(')
+			if (macro_name_i < MACRO_SIZE)
 			{
-				macro_name[macro_name_i] = 0;	
-				is.macro = 0;
-				list_add(&macros, strdup(macro_name));
+				macro_name[macro_name_i] = src_str[i];
+				if (src_str[i] == '(')
+				{
+					macro_name[macro_name_i] = 0;	
+					is.macro = 0;
+					list_add(&macros, strdup(macro_name));
+				}
+				else
+					macro_name_i += 1;
 			}
 			else
-				macro_name_i += 1;
+			{
+				is.macro = 0;
+				printf("%s:%i:%i: Error - macro name can not be longer than %i characters.\n", 
+				path, level.lines, level.cols, MACRO_SIZE);
+			}
 		}
 
 
@@ -151,7 +165,7 @@ t_macros	*parse(const char *path)
 		else if (is.cpp && is_token(remaining, src_str + i, "import"))
 		{
 			t_macros	*tmp;
-			char		import_buffer[1024];
+			char		import_buffer[IMPORT_SIZE + 1];
 			int			y;
 			int			p;
 
@@ -163,22 +177,32 @@ t_macros	*parse(const char *path)
 			{
 				if (src_str[i] == '<' || src_str[i] == '"')
 					p = 1;
-				else if (p && src_str[i] == '>' || src_str[i] == '"')
+				else if (p && (src_str[i] == '>' || src_str[i] == '"'))
 					break ;	
-				else if (p)
+				else if (p && y < (IMPORT_SIZE - 1))
 					import_buffer[y++] = src_str[i];
+				else if (y >= (IMPORT_SIZE - 1))
+				{
+					printf("%s:%i:%i: Error - import statement can not be longer than %i characters.\n", 
+					path, level.lines, level.cols, MACRO_SIZE);
+					y = -1;
+					break ;
+				}
 				remaining -= 1;
 				i += 1;
 			}
-			import_buffer[y + 1] = 0;
-			printf("import=%s\n", import_buffer);
-			tmp = parse(import_buffer);
-			while(tmp)
+			if (y >= 0)
 			{
-				list_add(&macros, tmp->data);
-				tmp = tmp->next;
+				import_buffer[y + 1] = 0;
+				printf("import=%s\n", import_buffer);
+				tmp = parse(import_buffer);
+				while(tmp)
+				{
+					list_add(&macros, tmp->data);
+					tmp = tmp->next;
+				}
+				list_clear((void*)&tmp, 0);
 			}
-			list_clear((void*)&tmp, 0);
 		}
 		if (!(src_str[i] == '\n') && !is.escaped)
 			level.cols += 1;
