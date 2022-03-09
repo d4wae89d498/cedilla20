@@ -18,7 +18,7 @@ macro rule	test(const char *s)
 	return (rule) {0, 0};
 }
 
-macro rule	lol(const char *s, size_t i)
+macro rule	lol(const char *s)
 {
 	char	name[255];
 	char	*o;
@@ -41,5 +41,5 @@ macro rule	lol(const char *s, size_t i)
 
 int	main(void)
 {
-	printf("Hello joe.");
+	printf("Hello Hello joe. .");
 }

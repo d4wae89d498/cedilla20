@@ -9,12 +9,61 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-
 # define auto __auto_type
 # define __(...) #__VA_ARGS__
+# define macro	
+typedef struct {int i; char*s;} rule;
+macro rule test42(const char *s)
+{
+	int		i;
+	char 	name[64];
+	char	*o;
+
+	i = 0;
+	while (s[i] && s[i] == "Hello "[i])
+	{
+		i += 1;
+	}
+	if ("Hello "[i])
+		return (rule) {0,0};
+	while (s[i] && s[i] != '.' && (i + 6) < 33)
+	{
+		name[i - 6] = s[i];
+		i += 1;
+	}
+	name[i - 6] = 0;
+	if (s[i] != '.')
+		return (rule) {0,0};
+	asprintf(&o, "Hallo  p%s!", name);
+	return (rule) {i + 1, o};
+}
+
+int	is_token(int remaining, char *begin, char *word)
+{
+	int	i;
+
+	i = 0;
+	while (remaining > i && word[i] && begin[i] == word[i])
+		i += 1;
+	if (!word[i])
+		return (1);
+	return (0);
+}
+
+int	is_word(int remaining, char *begin, char *word)
+{
+	int	i;
+
+	i = 0;
+	while (remaining > i && word[i] && begin[i] == word[i])
+		i += 1;
+	if (!word[i] && !isalpha(begin[i]))
+		return (1);
+	return (0);
+}
+
 
 static void mkpath(const char *dir);
-
 static void mkpath(const char *dir)
 {
     char tmp[256];

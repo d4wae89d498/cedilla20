@@ -6,30 +6,6 @@
 # define IMPORT_SIZE 1024
 #endif
 
-int	is_token(int remaining, char *begin, char *word)
-{
-	int	i;
-
-	i = 0;
-	while (remaining > i && word[i] && begin[i] == word[i])
-		i += 1;
-	if (!word[i])
-		return (1);
-	return (0);
-}
-
-int	is_word(int remaining, char *begin, char *word)
-{
-	int	i;
-
-	i = 0;
-	while (remaining > i && word[i] && begin[i] == word[i])
-		i += 1;
-	if (!word[i] && !isalpha(begin[i]))
-		return (1);
-	return (0);
-}
-
 typedef struct s_macros
 {
 	char			*data;
@@ -64,7 +40,7 @@ t_macros	*parse(const char *path)
 		 *	macro -> -1
 		 *	macro rules -> 1
 		 */
-		int	macro					:2;
+		int	amacro					:2;
 	}			is = {0, 0, 0, 0, 0, 0, 0, 0};
 	int			src_fd;
 	t_macros	*macros;
@@ -82,7 +58,7 @@ t_macros	*parse(const char *path)
 	while (i < size)
 	{
 		remaining = size - i;
-		if (is.macro == 1)
+		if (is.amacro == 1)
 		{
 			if (macro_name_i < MACRO_SIZE)
 			{
@@ -90,7 +66,7 @@ t_macros	*parse(const char *path)
 				if (src_str[i] == '(')
 				{
 					macro_name[macro_name_i] = 0;	
-					is.macro = 0;
+					is.amacro = 0;
 					list_add(&macros, strdup(macro_name));
 				}
 				else
@@ -98,7 +74,7 @@ t_macros	*parse(const char *path)
 			}
 			else
 			{
-				is.macro = 0;
+				is.amacro = 0;
 				printf("%s:%i:%i: Error - macro name can not be longer than %i characters.\n", 
 				path, level.lines, level.cols, MACRO_SIZE);
 			}
@@ -120,8 +96,8 @@ t_macros	*parse(const char *path)
 			is.escaped = 1;
 		else if (src_str[i] == '(' && !is.quote && !is.quotes && !is.comment && !is.comments)
 		{
-			if (is.macro && !level.parentheses)
-				is.macro = 0;
+			if (is.amacro && !level.parentheses)
+				is.amacro = 0;
 			level.parentheses += 1;
 		}
 		else if (src_str[i] == '[' && !is.quote && !is.quotes && !is.comment && !is.comments)
@@ -151,16 +127,16 @@ t_macros	*parse(const char *path)
 			is.comments = 0;
 		else if (is_word(remaining, src_str + i, "macro"))
 		{
-			is.macro = -1;
+			is.amacro = -1;
 		}
 		else if (
-				is.macro == -1
+				is.amacro == -1
 				&&	is_word(remaining, src_str + i, "rule")
 				&& !is.comment && !is.comments && !is.quote && !is.quotes)
 		{
 			i += 4;
 			macro_name_i = 0;	
-			is.macro = 1;
+			is.amacro = 1;
 		}
 		else if (is.cpp && is_token(remaining, src_str + i, "import"))
 		{
@@ -252,7 +228,11 @@ void	compile(const char *src, const char *dst)
 	struct stat buf;
 	off_t		size;
 	size_t		i;
+	int			match;
 
+
+	char	*swp;
+	asprintf(&swp, "%%s.prev", dst);
 	printf("Translating %%s -> %%s\n", src, dst);
 	src_fd = open(src, O_RDONLY);
 	mkpath(dst);
@@ -262,50 +242,28 @@ void	compile(const char *src, const char *dst)
 	src_str = malloc(size);
 	read(src_fd, src_str, size);
 	i = 0;
+	match = 0;
 	while (i < size)
 	{
-		
-		 printf("%s\n");
-		
-			
+		rule r = test42(src_str + i);
+		if (r.i)
+		{
+			printf("Macro rule match at src_str[i=%%zu r.s=%%s r.i=%%i]\n", i,  r.s, r.i);
+			write(dst_fd, r.s, strlen(r.s));
 
-		i += 1;
+			i += r.i;
+			match = 1;
+		}
+		else
+		{
+			write(dst_fd, src_str + i, 1);
+			i += 1;
+		}
 	}
-	/* 
- 	 *
- 	 *	at each index, try a macro 
- 	 *
- 	 * for each i 
- 	 * 		for each macros
- 	 *
- 	 *			if macro ret != 0
- 	 *				replace match, and retry on same index
- 	 *			else
- 	 *				try an other macro
-	 *
-	 *	reset counter and repeat until no more change or deepth max
- 	 *
- 	 */
-\n\x23 define P __\n
-	dprintf
-	(
-	 	dst_fd,
-		P(
-			\\x23include <ft>\\x20 \\n
-
-
-			%%s
-
-			int main()
-			{
-				printf("ok!\n");
-			}
-		),
-		""
-	);
-
 	close(src_fd);
 	close(dst_fd);
+
+
 }
 
 int		main(int ac, char **av)
@@ -322,8 +280,7 @@ int		main(int ac, char **av)
  *============================================================
  */
 }
-		), 
-	 	"macrossss"
+		) 
 	);
 
 	close(dst_fd);

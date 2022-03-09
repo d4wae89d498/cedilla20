@@ -1,9 +1,12 @@
-all:
-	cc -g -I. compiler.c -o çc
-	./çc spec.ç spec_compiler.c
-	cc -I. spec_compiler.c -o spec_compiler
-	./spec_compiler spec.ç spec.c
+SHELL := /bin/bash
+
+all:		compiler
+	source ./compile.sh && \
+	compile spec.ç spec.c -I. && \
 	cc -I. spec.c && ./a.out
+# TODO: delete macro after last iteration
+compiler:	compiler.c ft
+	cc -g -I. compiler.c -o çc
 nocedille:
 	cp spec.ç spec.c && cc -I. spec.c && ./a.out
 diff:

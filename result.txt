@@ -1,14 +1,41 @@
 cc -g -I. compiler.c -o çc
-./çc spec.ç spec_compiler.c
+source ./compile.sh && \
+	compile spec.ç spec.c -I. && \
+	cc -I. spec.c && ./a.out
+./çc spec.ç tmp_compiler.c
 parsing: spec.ç...
 import=ç
 parsing: ç...
 import=ft
 parsing: ft...
--- macro rule: test42 (char*, size_t);
--- macro rule: test (char*, size_t);
--- macro rule: lol (char*, size_t);
-cc -I. spec_compiler.c -o spec_compiler
-./spec_compiler spec.ç spec.c
-cc -I. spec.c && ./a.out
-ok!
+-- macro rule: test42;
+-- macro rule: test;
+-- macro rule: lol;
+generating intermediate compiler: tmp_compiler.c...
+cc -I. tmp_compiler.c -o tmp_compiler
+Translating spec.ç -> spec.c
+Macro rule match at src_str[i=613 r.s=Hallo  pHello joe! r.i=16]
+a: 0\nb: 1
+Translating spec.c.prev -> spec.c
+Macro rule match at src_str[i=621 r.s=Hallo  pjoe! ! r.i=12]
+a: c50b68588ca66959ee63fdf49fb49006fa6166aa\nb: 5752f05fc4225aa52ec6bdedf27c303d389221ef
+Translating spec.c.prev -> spec.c
+./çc spec.ç tmp_compiler.c
+parsing: spec.ç...
+import=ç
+parsing: ç...
+import=ft
+parsing: ft...
+-- macro rule: test42;
+-- macro rule: test;
+-- macro rule: lol;
+generating intermediate compiler: tmp_compiler.c...
+cc -I. tmp_compiler.c -o tmp_compiler
+Translating spec.ç -> spec.c
+Macro rule match at src_str[i=613 r.s=Hallo  pHello joe! r.i=16]
+a: 0\nb: 1
+Translating spec.c.prev -> spec.c
+Macro rule match at src_str[i=621 r.s=Hallo  pjoe! ! r.i=12]
+a: c50b68588ca66959ee63fdf49fb49006fa6166aa\nb: 5752f05fc4225aa52ec6bdedf27c303d389221ef
+Translating spec.c.prev -> spec.c
+Hallo  pHallo  pjoe! !
