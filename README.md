@@ -14,5 +14,5 @@
 [ ] - force 'macro rule' without keywords betweem 'macro' and 'rule'
 [ ] - implement a basic C parser in ç
 [ ] - use macros within macro
-[ ] - macros depencies tree (should remove the obligation of beeing a strict C-compatible super-set)
+[ ] - dep tree / or loop until macro stays the same, but what if applied macro was not ready yet?)
 ```
