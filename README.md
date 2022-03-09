@@ -13,4 +13,6 @@
 [ ] - detect brace level for macro rule parsing 
 [ ] - force 'macro rule' without keywords betweem 'macro' and 'rule'
 [ ] - implement a basic C parser in ç
+[ ] - use macros within macro
+[ ] - macros depencies tree (should remove the obligation of beeing a strict C-compatible super-set)
 ```
