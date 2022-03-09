@@ -13,33 +13,62 @@ macro struct
 	int	braces_level		:16;
 }		c_ctx;
 
+
+macro rule	test42(const char *s)
+{
+	int		i;
+	char 	name[64];
+	char	*o;
+
+	i = 0;
+	while (s[i] && s[i] == "Hello "[i])
+	{
+		i += 1;
+	}
+	if ("Hello "[i])
+		return (rule) {0,0};
+	while (s[i] && s[i] != '.' && (i + 6) < 33)
+	{
+		name[i - 6] = s[i];
+		i += 1;
+	}
+	name[i - 6] = 0;
+	if (s[i] != '.')
+		return (rule) {0,0};
+	asprintf(&o, "Hallo  p%s!", name);
+	return (rule) {i + 1, o};
+}
+
 macro rule	test(const char *s)
 {
 	return (rule) {0, 0};
 }
 
+#define or &&
 macro rule	lol(const char *s)
 {
 	char	name[255];
 	char	*o;
 	size_t	i;
 
-	i = 0;
-	while (s[i] && s[i] == "Hello"[i])
-		i += 1;
-	while (s[i] && s[i] != '.')
+	if (s[0] == 'o' && s[1] == 'r' && s[2] == ' ' && s[3] == '0')
 	{
-		name[i] = s[i];
-		i += 1;
+		asprintf(&o, "|| 0");
+		return (rule) {4, o};
 	}
-	if (!s[i])
-		return (rule) {0, 0};
-	name[i] = 0;
-	asprintf(&o, "Hello %s!", name);
-	return (rule) {i, o};
+	return (rule) {0, 0};
 }
+
+
 
 int	main(void)
 {
+	if (1 or 0)
+	{
+		printf("rule 'or' is working.\n");
+	}
+
 	printf("Hello Hello joe. .");
+
+	return (0);
 }

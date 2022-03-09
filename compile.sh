@@ -10,7 +10,7 @@ function compile
 	echo "cc $flags tmp_compiler.c -o tmp_compiler"
 	cc "$flags" "tmp_compiler.c" "-o" "tmp_compiler"
 	./tmp_compiler ${src} ${out}
-	rm tmp_compiler.c
+#	rm tmp_compiler.c
 	cp ${out} ${out}.prev
 	a=0
 	b=1

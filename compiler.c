@@ -201,10 +201,36 @@ void	compile(const char *src, const char *dst)
 {
 	int			dst_fd;
 	t_macros	*macros;
+	t_macros	*it;
+	char		*macro_engine;
+
+	char		*macro_engine_swp;
 
 	macros = parse(src);
 	list_macros(macros);
 	printf("generating intermediate compiler: %s...\n", dst);
+
+	macro_engine = 0;
+	it = macros;
+	while (it)
+	{
+		asprintf(&macro_engine_swp, "%s																		\n\
+																											\n\
+		rule r_%s = %s(src_str + i);																		\n\
+		if (r_%s.i)																							\n\
+		{																									\n\
+			printf(\"Macro rule match at src_str[i=%%zu r.s=%%s r.i=%%i]\\n\", i,  r_%s.s, r_%s.i);			\n\
+			write(dst_fd, r_%s.s, strlen(r_%s.s));															\n\
+			i += r_%s.i;																					\n\
+			continue ;																						\n\
+		}																									\n\
+		", macro_engine ? macro_engine : "" , 
+		it->data, it->data, it->data, it->data, it->data, it->data, it->data, it->data);
+		free(macro_engine);
+		macro_engine = macro_engine_swp;
+		it = it->next;
+	}
+
 	mkpath(dst);
 	dst_fd = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dprintf
@@ -217,8 +243,10 @@ void	compile(const char *src, const char *dst)
  *============================================================
  */
 
-\x20\x23 include <ft>\n
-
+\x20\x23 include <ft>		\n
+\x20\x23 define main main2	\n
+\x20\x23 include "%s"		\n
+\x20\x23 undef main			\n
 
 void	compile(const char *src, const char *dst)
 {
@@ -228,11 +256,8 @@ void	compile(const char *src, const char *dst)
 	struct stat buf;
 	off_t		size;
 	size_t		i;
-	int			match;
 
 
-	char	*swp;
-	asprintf(&swp, "%%s.prev", dst);
 	printf("Translating %%s -> %%s\n", src, dst);
 	src_fd = open(src, O_RDONLY);
 	mkpath(dst);
@@ -242,23 +267,11 @@ void	compile(const char *src, const char *dst)
 	src_str = malloc(size);
 	read(src_fd, src_str, size);
 	i = 0;
-	match = 0;
 	while (i < size)
 	{
-		rule r = test42(src_str + i);
-		if (r.i)
-		{
-			printf("Macro rule match at src_str[i=%%zu r.s=%%s r.i=%%i]\n", i,  r.s, r.i);
-			write(dst_fd, r.s, strlen(r.s));
-
-			i += r.i;
-			match = 1;
-		}
-		else
-		{
-			write(dst_fd, src_str + i, 1);
-			i += 1;
-		}
+		%s
+		write(dst_fd, src_str + i, 1);
+		i += 1;
 	}
 	close(src_fd);
 	close(dst_fd);
@@ -280,7 +293,7 @@ int		main(int ac, char **av)
  *============================================================
  */
 }
-		) 
+		), src, macro_engine 
 	);
 
 	close(dst_fd);

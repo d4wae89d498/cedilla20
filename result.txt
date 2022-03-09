@@ -14,11 +14,12 @@ parsing: ft...
 generating intermediate compiler: tmp_compiler.c...
 cc -I. tmp_compiler.c -o tmp_compiler
 Translating spec.ç -> spec.c
-Macro rule match at src_str[i=613 r.s=Hallo  pHello joe! r.i=16]
+Macro rule match at src_str[i=926 r.s=|| 0 r.i=4]
+Macro rule match at src_str[i=985 r.s=Hallo  pHello joe! r.i=16]
 a: 0\nb: 1
 Translating spec.c.prev -> spec.c
-Macro rule match at src_str[i=621 r.s=Hallo  pjoe! ! r.i=12]
-a: c50b68588ca66959ee63fdf49fb49006fa6166aa\nb: 5752f05fc4225aa52ec6bdedf27c303d389221ef
+Macro rule match at src_str[i=993 r.s=Hallo  pjoe! ! r.i=12]
+a: f48ccdb4d5b2f8915b133bf80e1ccbba73fd7d32\nb: 32d4cfb321fdef96ea284a94fab11dd2173d13a0
 Translating spec.c.prev -> spec.c
 ./çc spec.ç tmp_compiler.c
 parsing: spec.ç...
@@ -32,10 +33,12 @@ parsing: ft...
 generating intermediate compiler: tmp_compiler.c...
 cc -I. tmp_compiler.c -o tmp_compiler
 Translating spec.ç -> spec.c
-Macro rule match at src_str[i=613 r.s=Hallo  pHello joe! r.i=16]
+Macro rule match at src_str[i=926 r.s=|| 0 r.i=4]
+Macro rule match at src_str[i=985 r.s=Hallo  pHello joe! r.i=16]
 a: 0\nb: 1
 Translating spec.c.prev -> spec.c
-Macro rule match at src_str[i=621 r.s=Hallo  pjoe! ! r.i=12]
-a: c50b68588ca66959ee63fdf49fb49006fa6166aa\nb: 5752f05fc4225aa52ec6bdedf27c303d389221ef
+Macro rule match at src_str[i=993 r.s=Hallo  pjoe! ! r.i=12]
+a: f48ccdb4d5b2f8915b133bf80e1ccbba73fd7d32\nb: 32d4cfb321fdef96ea284a94fab11dd2173d13a0
 Translating spec.c.prev -> spec.c
+rule 'or' is working.
 Hallo  pHallo  pjoe! !
