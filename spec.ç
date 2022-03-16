@@ -1,19 +1,6 @@
 # import <ç>
 # import <ft>
 
-macro struct
-{
-	int	comment				:1;
-	int	comments			:1;
-	int	quote				:1;
-	int	quotes				:1;
-	int	escaped				:1;
-	int	parentheses_level	:16;
-	int	brackets_level		:16;
-	int	braces_level		:16;
-}		c_ctx;
-
-
 macro rule	test42(const char *s)
 {
 	int		i;
