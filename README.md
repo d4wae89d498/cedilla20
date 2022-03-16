@@ -43,7 +43,7 @@ make
 ```
 
 
-# Exo-programming language
+## Exo-programming language
 
 *Définition*
 ```
