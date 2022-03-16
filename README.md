@@ -7,11 +7,11 @@ Any existing programming language can be implemented using Cédille.
 ## Demo
 
 
-[https://github.com/MarcFaussurier/ft_cedillev2/blob/master/spec.%C3%A7](spec.ç)
+[spec.ç](https://github.com/MarcFaussurier/ft_cedillev2/blob/master/spec.%C3%A7)
 
-[https://github.com/MarcFaussurier/ft_cedillev2/blob/master/result_a.txt](outputs with cédille)
+[outputs with cédille](https://github.com/MarcFaussurier/ft_cedillev2/blob/master/result_a.txt)
 
-[https://github.com/MarcFaussurier/ft_cedillev2/blob/master/result_b.txt](outputs without cédille)
+[outputs without cédille](https://github.com/MarcFaussurier/ft_cedillev2/blob/master/result_b.txt)
 
 
 Compile & run the spec file by ignoring macro
