@@ -36,11 +36,10 @@ make
 ## Todos
 
 ```
-[ ] - detect brace level for macro rule parsing 
+[ ] - internally detect brace level for macro rule parsing 
 [ ] - force 'macro rule' without keywords betweem 'macro' and 'rule'
-[ ] - implement a basic C parser in ç
-[ ] - use macros within macro
-[ ] - dep tree / or loop until macro stays the same, but what if applied macro was not ready yet?)
+[ ] - implement a basic C parser in ç to get parenthesis level etc easily within macros
+[ ] - apply macros one-by-one and recompile intermediate compiler at each time so that macro defintion may use others macro defintion
 ```
 
 
