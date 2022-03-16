@@ -6,7 +6,7 @@ Any existing programming language can be implemented using Cédille.
 
 ## Demo
 
-Compile & run the spec file without macro
+Compile & run the spec file by ignoring macro
 ```
 make nocedille
 ```
