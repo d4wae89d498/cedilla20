@@ -1,3 +1,21 @@
+Cédille is a preprocessor, that use C as a preprocessing language. 
+This preprocessor can detect and apply any pattern replacement.
+Any existing programming language can be implemented using Cédille.
+
+
+
+## Demo
+
+Compile & run the spec file without macro
+```
+make nocedille
+```
+
+Compile & run the spec file with macro
+```
+make
+```
+
 ## Macro engine steps 
 
 ```
@@ -15,4 +33,25 @@
 [ ] - implement a basic C parser in ç
 [ ] - use macros within macro
 [ ] - dep tree / or loop until macro stays the same, but what if applied macro was not ready yet?)
+```
+
+
+# Exo-programming language
+
+*Définition*
+```
+An exo-programming language is a preprocessor, that use destination language as 
+preprocessing language. 
+```
+
+*Propiété*
+```
+By assuming that the destination-language is turing-complete, the preprocessor
+can detect and apply any pattern replacement.
+```
+
+*Conséquence*
+```
+Any existing programming language can now be implemented using the destination 
+language and the exo programming language.
 ```
