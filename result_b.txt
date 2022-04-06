@@ -1,2 +1,0 @@
-cp spec.ç spec.c && cc -I. spec.c && ./a.out
-Hello Hello joe. .

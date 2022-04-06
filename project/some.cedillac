@@ -1,0 +1,18 @@
+convertors
+{
+    expression
+    C (
+
+    )
+    PHP (
+
+    )
+    {
+
+    }
+
+    module a.h source a.c 
+    {
+
+    }
+}
