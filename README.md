@@ -41,24 +41,3 @@ make
 [ ] - implement a basic C parser in ç to get parenthesis level etc easily within macros
 [ ] - apply macros one-by-one and recompile intermediate compiler at each time so that macro defintion may use others macro defintion
 ```
-
-
-## Exo-programming language
-
-*Définition*
-```
-An exo-programming language is a preprocessor, that use destination language as 
-preprocessing language. 
-```
-
-*Propiété*
-```
-By assuming that the destination-language is turing-complete, the preprocessor
-can detect and apply any pattern replacement.
-```
-
-*Conséquence*
-```
-Any existing programming language can now be implemented using the destination 
-language and the exo programming language.
-```
