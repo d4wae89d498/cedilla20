@@ -1,0 +1,23 @@
+#include "ç.h"
+
+// until // prehaps add a while kw ?
+// is .. not kw ?
+// how to differenciate between name () and macro()() that returns a name ?
+// anon function with *fptr *fdata
+// lambda capture 
+// await may be used as a value
+macro 
+{
+    auto k = match 
+    (
+        "await",
+        is space3, // match any space indefinitely ??
+        func_name until
+        "(",
+        arguments until is closing_parenthese 
+        ")",
+        function_footer until ...
+    )
+    asprintf("%s %s func_name(arguments, callback)")
+}
+
