@@ -1,11 +1,13 @@
 #include "ç.h"
 
+// TODO:: call compile_time stuffs outside macro in plain code
 compile_time
 int function_end(ç_ctx ctx, char *str)
 {
     return ctx.pairs_level['{'] == 0;
 }
 
+//Do nothing because ctx cursos pos is not incremented as there is no match() that succeed
 macro
 {
     return "42"; 
@@ -20,17 +22,21 @@ macro
                 lambda_arguments,
                 lambda_body,
             function_body_footer;
+    //Looks like if expr are better outside match
+    // i.e 
+    // if (match(.... until A))
+    //  ....
+    // else if (match (... until B))
     auto k = match
     (
         ctx,
         capture global_scope until "{",
         capture function_body_head until "^",
         capture lambda_return_type until "" 
-         //       is last_parenthese_before_open_bracket 
-         //   and is pairs_levels_are_same, // what about ^(int)(*cb)(int) (int a){}
+         //  what about ^AMACRO(THATRETURNS_A_TYPE) (int a){}
         capture lambda_arguments until "{",
         capture lambda_body until "}",
-        capture function_body_footer until function_end
+        capture function_body_footer until is function_end
     );
 }
 
