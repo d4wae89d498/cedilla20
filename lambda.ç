@@ -1,0 +1,42 @@
+#include "ç.h"
+
+compile_time
+int function_end(ç_ctx ctx, char *str)
+{
+    return ctx.pairs_level['{'] == 0;
+}
+
+macro
+{
+    return "42"; 
+}
+
+macro 
+{
+    const char *global_scope,
+            function_prototype,
+            function_body_head,
+                lambda_return_type,
+                lambda_arguments,
+                lambda_body,
+            function_body_footer;
+    auto k = match
+    (
+        ctx,
+        capture global_scope until "{",
+        capture function_body_head until "^",
+        capture lambda_return_type until "" 
+         //       is last_parenthese_before_open_bracket 
+         //   and is pairs_levels_are_same, // what about ^(int)(*cb)(int) (int a){}
+        capture lambda_arguments until "{",
+        capture lambda_body until "}",
+        capture function_body_footer until function_end
+    );
+}
+
+int main()
+{
+    printf("---\n");
+    printf(STRINGIFY(macro));
+    printf("\n---\n");
+}
