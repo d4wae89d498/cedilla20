@@ -1,0 +1,12 @@
+create warnings for:
+- iterating w/out iterators, array bound checks 
+- null ptr -> compile time warning
+- async functions / threads / childs process should not get a reference to a scope variable, only copy or borrow/move, defers will follow the borrow 
+- async functions / threads that access to a global variable without mutex 
+- process that modifies a non-shared memory 
+- alloc without defer free  
+- open without defer close  
+- va open without defer va close 
+- use after borrow/move  
+- cast to ptr 
+- cast to lower type 
