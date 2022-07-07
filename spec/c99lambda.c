@@ -4,7 +4,7 @@
 //          as '$ cpp *.ç' will occurs before '$ cedilla *.ç' \
 
 #define test(...) 0
-#define lambda(X, Y, ...) ((Y(*)()) (long long) ( { __VA_ARGS__ 0;} ))
+#define lambda(X, Y, ...) ((Y(*)()) (long long) ( { (void) ({ __VA_ARGS__}); 0;} ))
 
 #define _(...) test
 
@@ -16,23 +16,25 @@ int itest()
         int z;
         float f;
     } ks;
+    int ppz;
     int pp;
-    int pp;
+
+
 
 // todo:: fix structure because clang does not support return in ({ expression })
 // BUTT it is an IDE-only issue, clanging the file actually work as the p pointer is initialized to 0
-    ks(*p)() = lambda ((int x, int y), int, 
-        return (ks) {0,0,0}; 
+    ks(*ppp)() = lambda ((int x, int y), ks, 
+         (ks) {0,0,0}; 
     );
 // instead a fix would be 
-    ks(*p)() = lambda ((int x, int y), int, 
-        (ks) {0,0,0}; 
+    ks(*p)() = lambda ((int x, int y), ks, 
+         (ks) {0,0,0}; 
     );
 
 
     int(*k)() = lambda ((int x, int y), int, 
-        dwadwa  // ide error : dwadwa is undefined 
-        return 1; 
+     //   dwadwa  // ide error : dwadwa is undefined 
+     //   return 1; 
     );
 
     long long ll = lambda((int x), int, 
