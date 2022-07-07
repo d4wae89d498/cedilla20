@@ -40,7 +40,7 @@ int itest()
 
     int(*k)() = lambda ((int x, int y), int, 
      //   dwadwa  // ide error : dwadwa is undefined 
-     //   return 1; 
+        lambda_return 1; 
     );
 
     long long ll = lambda((int x), int, 
@@ -57,7 +57,7 @@ int itest()
         lambda_return 0; 
     )();
     char c  = lambda((int x), short, 
-        return 0; 
+        lambda_return 0; 
     )('z');
 
     unsigned long long ull = lambda((int x), unsigned long long, 
