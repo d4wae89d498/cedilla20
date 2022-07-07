@@ -53,17 +53,18 @@ typedef long long   __cedilla_lambda;
 
 
     #define __(__a1, __a2, __a3, __a4, __a5) __a1; __a3; __a3; __a4; __a5;
+    #define __(__a1, __a2, __a3, __a4) __a1; __a3; __a3; __a4;
+    #define __(__a1, __a2, __a3) __a1; __a2; __a3;
+    #define __(__a1, __a2) __a1; __a2;
 
     #define ___(...) __VA_ARGS__
 
 
-#define lambda(X, Y, ...) ( (X(*)(CONCAT(__, Y)))  (__cedilla_lambda) ( { \
-        CONCAT(_, Y)        \
-        (void) ({ __VA_ARGS__}); 0;\
+#define lambda(X, Y, ...) ((X(*)(CONCAT(__, Y))) (__cedilla_lambda) ( { \
+    CONCAT(_, Y)        \
+    (void) ({ __VA_ARGS__}); 0;\
     }))
 
-__(a, b);
-__(int a4);
 
 #define return_structure
 #define lambda_return (__cedilla_lambda_return)
@@ -87,18 +88,12 @@ int itest()
     int ppz = 5;
     int pp = 4;
     
-    int g=({
-        int x;
-        int y;
-
-        5;
-    });
-
-    void *p = ((int(*)(int x, int y)) 4);
 
 
-      binded_lambda.f = lambda (int, _(int x),
-           5;   
+
+
+      binded_lambda.f = lambda (int, _(int x, int y),
+           lambda_return x + y;     
         );
    // binded_lambda.d = ();
 //    printf("%d", call(binded_lambda)(6));

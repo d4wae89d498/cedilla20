@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "*.ç": "c"
+        "*.ç": "c",
+        "ç.h": "c",
+        "libc.h": "c",
+        "va_count.h": "c",
+        "out.h": "c"
     }
 }
