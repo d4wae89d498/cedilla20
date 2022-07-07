@@ -56,7 +56,7 @@ typedef long long   __cedilla_lambda;
 
     #define ___(...) __VA_ARGS__
 
-
+// todo:: use foreach instead of an other syntax for argument for both (,) and (;) in expr block
 #define lambda(X, Y, ...) ( (X(*)(CONCAT(__, Y)))  (__cedilla_lambda) ( { \
         CONCAT(_, Y)        \
         (void) ({ __VA_ARGS__}); 0;\
