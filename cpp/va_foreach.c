@@ -16,12 +16,11 @@
  *      — 127 arguments in one macro invocation
  */
 #define concat(X, Y) X##Y
-#define concat2(X, Y) concat(X, Y)
-#define va_each(M, ...) concat2(va_each_, va_count(__VA_ARGS__))(M, __VA_ARGS__)
+#define apply(m, ...) m(__VA_ARGS__)
+#define va_each(M, ...) apply(concat, va_each_, va_count(__VA_ARGS__))(M, __VA_ARGS__)
 #define str(...) #__VA_ARGS__
-#define str_expand(...) str(__VA_ARGS__)
 #define each_test(x) , (x + 1)
-#define dump_macro(...) printf("[%s:%i dump_macro] %s\n", __FILE__, __LINE__, str_expand(__VA_ARGS__));
+#define dump_macro(...) printf("[%s:%i dump_macro] %s\n", __FILE__, __LINE__, apply(str, __VA_ARGS__));
 int main()
 {
     printf("%i %i\n" va_each(each_test, 1, 2));
