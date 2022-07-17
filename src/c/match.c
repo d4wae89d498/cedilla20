@@ -1,4 +1,4 @@
-#include "./match.h"
+#include "./../include/match.h"
 
 int match_capture(ç_ctx *ctx, va_list ap)
 {
@@ -6,11 +6,6 @@ int match_capture(ç_ctx *ctx, va_list ap)
     return 1;
 }
 
-match_instruction m_instructions[1024] = {
-    {capture, match_capture},
-    {0, 0}
-};
-    
 /*
  * todo:: store current ctx copy in ctx->prev_state and restore it on failure at each return 0
  */
@@ -60,3 +55,19 @@ int match(ç_ctx *ctx, ...)
     va_end(ap);
     return r;
 }
+
+#if CEDILLA_TEST == 1
+# include "assert.h"
+int main()
+{
+    ç_ctx   ctx;
+    int     r;
+
+    printf("testing match...\n");  
+    ctx.str = "HELLO WORLD";
+    r = match(&ctx, "HELLO", " ", "WORLD", 0);
+    assert(r == 1);
+    r = match(&ctx, "HELLO", 0);
+    assert(r == 1); // todo: fix me
+}
+#endif

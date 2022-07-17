@@ -1,5 +1,5 @@
-#ifndef VA_COUNT
-# define VA_COUNT
+#ifndef CPP_COUNT
+# define CPP_COUNT
 # include <stdarg.h>
 /*
  * This idea is from Laurent Deniau, CERN, and is taken from a discussion in comp.lang.c.
@@ -15,7 +15,7 @@
  *      ...
  *      — 127 arguments in one macro invocation
  */
-# define va_index(\
+# define CPP_INDEX(\
 A000, A001, A002, A003, A004, A005, A006, A007, A008, A009,\
 A010, A011, A012, A013, A014, A015, A016, A017, A018, A019,\
 A020, A021, A022, A023, A024, A025, A026, A027, A028, A029,\
@@ -29,7 +29,7 @@ A090, A091, A092, A093, A094, A095, A096, A097, A098, A099,\
 A100, A101, A102, A103, A104, A105, A106, A107, A108, A109,\
 A110, A111, A112, A113, A114, A115, A116, A117, A118, A119,\
 A120, A121, A122, A123, A124, A125, A126, I, ...) I
-# define va_count(...) va_index(void, ##__VA_ARGS__,\
+# define CPP_COUNT(...) CPP_INDEX(void, ##__VA_ARGS__,\
                126, 125, 124, 123, 122, 121, 120,\
 119, 118, 117, 116, 115, 114, 113, 112, 111, 110,\
 109, 108, 107, 106, 105, 104, 103, 102, 101, 100,\

@@ -1,17 +1,8 @@
 #include "../ç.h"
 
-// TODO:: call compile_time stuffs outside macro in plain code
-compile_time
-int function_end(ç_ctx ctx, char *str)
-{
-    return ctx.pairs_level['{'] == 0;
-}
-
-//Do nothing because ctx cursos pos is not incremented as there is no match() that succeed
-macro
-{
-    return "42"; 
-}
+#if ide_compat == 1
+#define compile_time 1
+#endif
 
 macro 
 {
@@ -167,4 +158,18 @@ int itest()
 int main()
 {
     itest();
+}
+
+
+// TODO:: call compile_time stuffs outside macro in plain code
+compile_time
+int function_end(ç_ctx ctx, char *str)
+{
+    return ctx.pairs_level['{'] == 0;
+}
+
+//Do nothing because ctx cursos pos is not incremented as there is no match() that succeed
+macro
+{
+    return "42"; 
 }

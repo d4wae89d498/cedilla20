@@ -9,6 +9,9 @@
 // anon function with *fptr *fdata
 // lambda capture 
 // await may be used as a value
+#if ide_compat == 1
+#define await
+#endif
 macro 
 {
     auto k = match 
@@ -24,3 +27,9 @@ macro
     asprintf("%s %s func_name(arguments, callback)")
 }
 
+#if TEST
+
+int main()
+{}
+
+#endif

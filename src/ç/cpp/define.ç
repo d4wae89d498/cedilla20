@@ -1,0 +1,47 @@
+// define v
+// define v()
+// undef v
+
+#include "../../include/ç.h"
+#if ide_compat == 1
+// nothing to do, define already defined
+#endif
+macro 
+{
+   /* if (match(ctx, is_ident, is_char "#", capture label until is_space, capture value until is_nl))
+    {
+        if(!strncmp(label, "include"))
+        {
+
+        }
+        else if (!strncmp(label, "define"))
+        {
+            if (match(ctx, may_space, "("))
+                object_ref(ctx, "symbols").add(label, CPP_MACRO, macro_fn_to_function(value));
+            else
+                object_ref(ctx, "symbols").add_object(label, value);
+        }
+    }*/
+    return 0;
+}
+
+macro 
+{
+    // TODO: add the rule for replacing macros
+   // if (ctx, is_word,)
+    // for each macro, if match ..
+    // for each smbols, if match .. 
+    // for each CPP MACRO if match ...
+    return 0;
+}
+
+#if CEDILLA_TEST == 1
+# include <assert.h>
+# define N 42
+int main()
+{
+    assert(N == 42);
+   // assert(0);
+    return 0;
+}
+#endif
