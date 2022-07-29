@@ -1,9 +1,0 @@
-#include "../../include/ç.h"
-
-#if ide_compat == 1
-# define compile_time
-#endif;
-macro 
-{
-    
-}

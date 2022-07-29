@@ -1,10 +1,23 @@
-all: 		templates
+DEPS 	=	Makefile list/liblist.a object/libobject.a
 
-templates/ç_macro_cleaner.h: 		templates/ç_macro_cleaner.php
-	php templates/ç_macro_cleaner.php > templates/ç_macro_cleaner.h 
-templates/cpp_foreach_helper.h: 	templates/cpp_foreach_helper.php 
-	php templates/cpp_foreach_helper.php > templates/cpp_foreach_helper.h
+all: $(DEPS)
+	make -C list $@
+	make -C object $@
 
-tamplates:	templates/cpp_foreach_helper.h  templates/ç_macro_cleaner.h
+re: fclean all
 
+clean: $(DEPS) 
+	make -C list $@ 
+	make -C object $@
 
+flcean: $(DEPS) clean 
+	make -C list $@ 
+	make -C object $@
+
+test: $(DEPS) 
+	make -C list $@ 
+	make -C object $@
+
+run-test: $(DEPS) test
+	make -C list $@ 
+	make -C object $@
