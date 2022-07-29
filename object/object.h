@@ -3,8 +3,8 @@
 # include "string.h"
 # include "stdlib.h"
 # include "list.h"
-# define             object_new(A, B, C) _object_new(A, B, (long long)C)
-# define             dobject_new(A, B, C, D, E) _dobject_new(A, B, (long long) C, (void*)D, (void*)E)
+# define             object_new(TYPE, KEY, VALUE) _object_new(TYPE, KEY, (long long)VALUE)
+# define             dobject_new(TYPE, KEY, VALUE, DESTRUCT, CLONE) _dobject_new(TYPE, KEY, (long long) VALUE, (void*)DESTRUCT, (void*)CLONE)
 
 typedef struct s_object
 {

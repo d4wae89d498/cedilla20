@@ -26,7 +26,7 @@ int main()
     object_list *om = 0;
 
     olist_set(&om, object_new("int", "i", 42));
-    olist_set(&om, dobject_new("str", "s", strdup("testheap2"), free, strdup));
+    olist_set(&om, dobject_new("char*", "s", strdup("testheap2"), free, strdup));
 
     olist_del(&om, "i");
     assert(!strcmp((char*)om->data->value, "testheap2"));
@@ -37,8 +37,23 @@ int main()
     object_list *tst = 0;
     olist_set(&tst, dobject_new("object_list", "testOBJ", olist_clone(om), (void(*)(void*))olist_free, olist_clone));
 
-  printf("GETTIN VALUE:\n");
+    printf("GETTIN VALUE:\n");
     printf("%s\n", (char*)(olist_get_object((void*)olist_get_object(tst, "testOBJ")->value, "s")->value));
+    printf("GETTIN VALUE W/ get(...):\n");
+
+
+    printf("'%s'\n", get(tst, testOBJ.s,char*));
+
+
+  set_object(&tst, "testOBJ.s", object_new("char*", "s", "HIII"));
+
+    printf("GETTIN VALUE:\n");
+    printf("%s\n", (char*)(olist_get_object((void*)olist_get_object(tst, "testOBJ")->value, "s")->value));
+    printf("GETTIN VALUE W/ get(...):\n");
+
+
+    printf("'%s'\n", get(tst, testOBJ.s,char*));
+
     olist_del(&om, "s");
 
     olist_free(tst);
