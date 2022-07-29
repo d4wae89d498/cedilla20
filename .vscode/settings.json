@@ -1,7 +1,10 @@
 {
     "files.associations": {
-        "*.ç": "c",
-        "ç.h": "c",
-        "file.h": "c"
+        "array": "c",
+        "string_view": "c",
+        "iterator": "c",
+        "string": "c",
+        "vector": "c",
+        "match.h": "c"
     }
 }
