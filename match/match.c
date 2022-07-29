@@ -15,7 +15,7 @@ char    *str_add_c(char **s, char c)
     return *s = n;
 }
 
-char    *match(object_list **o, char **str, ...)
+char    *match(object_list **o, const char **str, ...)
 {
     char        *r;
     va_list     ap;
@@ -26,7 +26,7 @@ char    *match(object_list **o, char **str, ...)
     return r;
 }
 
-char    *vmatch(object_list **o, char **str, va_list ap)
+char    *vmatch(object_list **o, const char **str, va_list ap)
 {
     char    *output;
 
@@ -34,7 +34,7 @@ char    *vmatch(object_list **o, char **str, va_list ap)
 
     char    **capture_ptr;   
     char    *capture_type;
-    int     (*until_func)(object_list **o, char **str, va_list ap);
+    int     (*until_func)(object_list **o, const char **str, va_list ap);
 
     output = 0;
 
@@ -69,6 +69,14 @@ char    *vmatch(object_list **o, char **str, va_list ap)
         }
         else 
         {
+            if (strncmp(current_arg, *str, strlen(current_arg)))
+            {
+                    // restore object bkp 
+            }
+            else 
+            {
+                *str += strlen(current_arg);
+            }
             //STRCMP
         }
     }

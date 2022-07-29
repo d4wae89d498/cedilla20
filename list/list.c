@@ -55,12 +55,12 @@ void   list_del(list **l, list *k, void(*value_destructor)(void*))
     }
 }
 
-void    list_free(list **l, void(*value_destructor)(void*))
+void    list_free(list *l, void(*value_destructor)(void*))
 {
     list    *it;
     list    *swp;
 
-    it = *l;
+    it = l;
     while (it)
     {
         swp = it->next;
@@ -69,5 +69,4 @@ void    list_free(list **l, void(*value_destructor)(void*))
         free(it);
         it = swp;
     }
-    *l = 0;
 }

@@ -30,8 +30,8 @@ int main()
         i = i->next;
     }*/
 
-    list_free(&l, 0);
-
+    list_free(l, 0);
+    l = 0;
 
     list *t = list_add(&l, strdup("113"));
     list *k = list_add(&l, strdup("114"));
@@ -39,6 +39,7 @@ int main()
     list_add(&l, strdup("115"));
     
     list_del(&l, t, free);
+
 
     assert(!strcmp(l->data, "114"));
     assert(!strcmp(l->next->data, "115"));
@@ -50,7 +51,7 @@ int main()
         printf("v: %s\n", i->data);
         i = i->next;
     }*/
-    list_free(&l, free);
+    list_free(l, free);
 
     printf("---------------\n");
     printf("LIBLIST.a   TESTS OK\n\n");

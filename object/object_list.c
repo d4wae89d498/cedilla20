@@ -83,7 +83,28 @@ void                olist_del(object_list **l, char *key)
     }
 }
 
-void olist_free(object_list **l)
+void olist_free(object_list *l)
 {
-    return list_free((list**)l, ((void(*)(void*))object_free));
+    return list_free((list*)l, ((void(*)(void*))object_free));
+}
+
+// todo:: parse key.key2 ...
+object *get(object_list *l, char *key)
+{
+
+}
+
+object_list *olist_clone(object_list *l)
+{
+    object_list *o;
+    object_list *it;
+
+    o = 0;
+    it = l;
+    while (it)
+    {
+        olist_set(&o, object_clone(it->data));
+        it = it->next;
+    }
+    return o;
 }

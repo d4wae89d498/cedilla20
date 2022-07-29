@@ -5,6 +5,24 @@
         "iterator": "c",
         "string": "c",
         "vector": "c",
-        "match.h": "c"
+        "match.h": "c",
+        "__string": "c",
+        "algorithm": "c",
+        "functional": "c",
+        "locale": "c",
+        "*.tcc": "c",
+        "__bit_reference": "c",
+        "__functional_base": "c",
+        "atomic": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "__memory": "c",
+        "limits": "c",
+        "memory": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     }
 }
