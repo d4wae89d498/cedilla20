@@ -89,7 +89,7 @@ void olist_free(object_list *l)
     return list_free((list*)l, ((void(*)(void*))object_free));
 }
 
-object *get_object(object_list *l, char *key)
+object *object_get(object_list *l, char *key)
 {
     object          *o;
     char            *key2;
@@ -111,10 +111,10 @@ object *get_object(object_list *l, char *key)
         printf("ERROR: GET ACCESS WITH WRONG TYPE, EXPECTED 'object_list' GOT '%s'\n", o->type);
         exit(1);
     }
-    return get_object((object_list*)o->value, key + pos + 1);
+    return object_get((object_list*)o->value, key + pos + 1);
 }
 
-object_list *set_object(object_list **l, char *key, object *v)
+object_list *object_set(object_list **l, char *key, object *v)
 {
     object          *o;
     char            *key2;
@@ -123,7 +123,18 @@ object_list *set_object(object_list **l, char *key, object *v)
 
     cmatch = strchr(key, '.');
     if (!cmatch)
-        return olist_set(l, v);
+    {
+       o = olist_get_object(*l, key);
+       if (!o)
+           olist_set(l, o = dobject_new("object_list", key, 0, olist_free, olist_clone));
+         else if (strcmp(o->type, "object_list"))
+    {
+        printf("ERROR: GET ACCESS WITH WRONG TYPE, EXPECTED 'object_list' GOT '%s'\n", o->type);
+        exit(1);
+    }
+        return olist_set((object_list**)&(o->value), v);
+    }
+        
     pos = cmatch - key;
     key2 = strdup(key);
     key2[pos] = 0;
@@ -138,7 +149,7 @@ object_list *set_object(object_list **l, char *key, object *v)
         printf("ERROR: GET ACCESS WITH WRONG TYPE, EXPECTED 'object_list' GOT '%s'\n", o->type);
         exit(1);
     }
-    return set_object((object_list**)&(o->value), key + pos + 1, v);
+    return object_set((object_list**)&(o->value), key + pos + 1, v);
 }
 
 object_list *olist_clone(object_list *l)

@@ -1,4 +1,5 @@
 #include "object.h"
+#include "stdio.h"
 
 object *_object_new(char *type, char *key, long long value)
 {
@@ -25,6 +26,7 @@ void object_free(object *p)
     o = p;
     if (!o)
         return;
+    printf("FREEING %s\n", o->key);
     free(o->key);
     free(o->type);
     if (o->value_destruct)

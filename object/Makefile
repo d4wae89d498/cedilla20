@@ -1,4 +1,4 @@
-CFLAGS 	= -Wall -Werror -Wextra -I../list 
+CFLAGS 	= -Wall -Werror -Wextra -I../list  -g
 CLIBS  	= -L../list -llist -g
 DEPS	= Makefile ../list/liblist.a
 NAME   	= libobject.a

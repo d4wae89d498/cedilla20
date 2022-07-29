@@ -45,7 +45,10 @@ int main()
     printf("'%s'\n", get(tst, testOBJ.s,char*));
 
 
-  set_object(&tst, "testOBJ.s", object_new("char*", "s", "HIII"));
+   set(&tst, testOBJ, new(char*, s, "HIII"));
+
+    printf("----'%s'\n", get(tst, testOBJ.s,char*));
+
 
     printf("GETTIN VALUE:\n");
     printf("%s\n", (char*)(olist_get_object((void*)olist_get_object(tst, "testOBJ")->value, "s")->value));
@@ -53,6 +56,11 @@ int main()
 
 
     printf("'%s'\n", get(tst, testOBJ.s,char*));
+
+
+   // set(&tst, testOBJ, "v");
+  //  dset(&tst, testOBJ, "v");
+
 
     olist_del(&om, "s");
 
