@@ -18,5 +18,5 @@ token(")")
   // on token ...
 
   if (!get(o, iscomment) && !get(o, isstring))
-      set(o, get(o, plvl) + 1);
+      set(o, get(o, plvl) - 1);
 }
