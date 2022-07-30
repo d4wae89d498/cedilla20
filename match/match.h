@@ -2,7 +2,9 @@
 # define MATCH_H
 # include "object_list.h"
 # include "stdarg.h"
-# define limit      ,"__CEDILLA_LIMIT",
+const char *limit = "__CEDILLA_LIMIT"
+
+# define limit      ,limit,
 # define parse      "__CEDILLA_STATE_PARSE",
 # define call       "__CEDILLA_STATE_CALL",
 # define skip       "__CEDILLA_SKIP",
