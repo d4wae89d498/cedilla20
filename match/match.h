@@ -5,7 +5,7 @@
 const char *limit = "__CEDILLA_LIMIT"
 
 # define limit      ,limit,
-# define parse      "__CEDILLA_STATE_PARSE",
+# define token      "__CEDILLA_STATE_PARSE",
 # define call       "__CEDILLA_STATE_CALL",
 # define skip       "__CEDILLA_SKIP",
 # define oskip      "__CEDILLA_OSKIP",

@@ -61,6 +61,16 @@ int main()
      * 
      * */
 
+    // difference between token and macros ??
+/*
+        - token alter lang state
+        - token dont ret
+        - token cant be longer than 1 char or max 1 word
+
+        - macro consume lang state 
+        - macro ret str
+        - any size
+*/
     char   *s; 
     match (&o, &str,
             oskip      is_space limit 5,    // optional skip a 5-len space, fail if longer
@@ -68,9 +78,9 @@ int main()
             skip       is_space,
             skip       is_word limit 10,    // word len max 10
             call       print_state,
-            parse      "(",
+            token      "(", // or token "(" ?
             capture    &s until
-                parse  ")",
+                token  ")",
 
 
             capture    &s until is_space,
