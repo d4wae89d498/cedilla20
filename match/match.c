@@ -36,6 +36,8 @@ char    *vmatch(object_list **o, const char **str, va_list ap)
     char    *capture_type;
     int     (*until_func)(object_list **o, const char **str, va_list ap);
 
+    object_list     *b = object_clone(*o);
+
     output = 0;
 
     va_list     apc;    
@@ -54,6 +56,7 @@ char    *vmatch(object_list **o, const char **str, va_list ap)
                 printf("-- until...\n");
                 until_func = va_arg(ap, void*);
                 va_copy(apc, ap);
+                // TODO:: is .. now returns a len
                 while (!until_func(o, str, apc))
                 {
                     str_add_c(capture_ptr, **str);
@@ -72,6 +75,10 @@ char    *vmatch(object_list **o, const char **str, va_list ap)
             if (strncmp(current_arg, *str, strlen(current_arg)))
             {
                     // restore object bkp 
+
+                    object_free(*o);
+                    *o = b;
+                    return 0;
             }
             else 
             {
@@ -80,5 +87,6 @@ char    *vmatch(object_list **o, const char **str, va_list ap)
             //STRCMP
         }
     }
+    object_free(b);
     return output;
 }   

@@ -7,8 +7,8 @@ int main()
 {
     object_list     *ol = 0;
 
-    olist_set(&ol, object_new("int", "i", 42));
-    olist_set(&ol, dobject_new("str", "s", strdup("testheap"), free, 0));
+    olist_set(&ol, new(int, i, 42));
+    olist_set(&ol, dnew(char*, s, strdup("testheap"), free, strdup));
 
 
     object *k = olist_get_object(ol, "i");

@@ -26,7 +26,7 @@ void object_free(object *p)
     o = p;
     if (!o)
         return;
-    printf("FREEING %s\n", o->key);
+   // printf("FREEING %s\n", o->key);
     free(o->key);
     free(o->type);
     if (o->value_destruct)
