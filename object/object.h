@@ -9,6 +9,7 @@
 # define             dobject_new(TYPE, KEY, VALUE, DESTRUCT, CLONE) _dobject_new(TYPE, KEY, (long long) VALUE, (void*)DESTRUCT, (void*)CLONE)
 # define             dnew(TYPE, KEY, VALUE, DESTRUCT, CLONE) dobject_new(STR(TYPE), STR(KEY), VALUE, DESTRUCT, CLONE)      
 
+// todo:: add const types 
 
 typedef struct s_object
 {
