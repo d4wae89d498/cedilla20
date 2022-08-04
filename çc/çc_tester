@@ -1,0 +1,93 @@
+#!/usr/bin/php
+<?php 
+const DS = DIRECTORY_SEPARATOR;
+const SRC_PATH = "src";
+
+/**
+ * @return string[]
+ */
+function    scanAllDir(string $dir)
+{
+    $result = [];
+    foreach(scandir($dir) as $filename) 
+    {
+      if ($filename[0] === '.')
+        continue;
+      $filePath = $dir . DS . $filename;
+      if (is_dir($filePath)) 
+      {
+        foreach (scanAllDir($filePath) as $childFilename)
+          $result[] = $filename . DS . $childFilename;
+      }
+      else 
+        $result[] = $filename;
+    }
+    return $result;
+}
+
+function cc_assert(string $file): int
+{
+  $output = [];
+  $ret = 0;
+  exec ("cc -dTEST=1 -Wno-unused-command-line-argument $file && ./a.out", $output, $ret);
+  return ($ret);
+}
+
+function çc_assert(string $file): int 
+{
+  $output = [];
+  $ret = 0;
+  exec ("./çc -dTEST=1 -Wno-unused-command-line-argument $file && ./a.out", $output, $ret);
+  return ($ret);
+}
+
+function çc_eq_cc(string $file): int
+{
+  $output = [];
+  $ret = 0;
+  $cmd = PHP_EOL ."cc -dTEST=1 -Wno-unused-command-line-argument $file && ./a.out";
+  echo $cmd . PHP_EOL;
+  exec ($cmd , $output, $ret);
+  $output2 = [];
+  $ret2 = 0;
+  $cmd = "./çc -dTEST=1 -Wno-unused-command-line-argument $file && ./a.out";
+  echo $cmd . PHP_EOL;
+  exec ($cmd, $output2, $ret2);
+  $error = (serialize($ret) != serialize($ret2)) || ($ret != $ret2);
+  if ($error)
+    echo "Error, expected r=$ret out=" . print_r($output, 1) . " got r2=$ret2 out2=" . print_r($output2, 1) . PHP_EOL;
+  return ($error);
+}
+
+function main(int $argc, array $arv): int
+{
+    $dirs = scanAllDir(SRC_PATH);
+    $dir = null;
+    $errors = 0;
+    $tests = 0;
+    foreach ($dirs as $file)
+    {
+        $test_dir = SRC_PATH . DS . dirname($file);
+        $file = SRC_PATH . DS . $file;
+        if ($dir != $test_dir)
+        {
+            echo "Testing $file ";
+            $tests += 1;
+            $dir = $test_dir;
+            $success = 0;
+            if (is_file($dir . DS . ".cc_assert.test_strategy"))
+              $success = !cc_assert($file);
+            else if (is_file($dir . DS . ".çc_assert.test_strategy"))
+              $success = !çc_assert($file);
+            else if (is_file($dir . DS . ".çc_eq_cc.test_strategy"))
+              $success = !çc_eq_cc($file);
+            $errors += $success;
+            echo $success ? "OK" : ("KO " . $success);
+            echo PHP_EOL;
+         }
+    }
+    echo ($errors) . " tests succeed / $tests" . PHP_EOL;
+    return (0);
+}
+
+exit(main($argc, $argv));

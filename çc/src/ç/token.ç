@@ -1,0 +1,22 @@
+compile_time_do
+{
+  set(o, plvl, 0);
+}
+
+
+token("(")
+{
+  // on token ...
+
+  if (!get(o, iscomment) && !get(o, isstring))
+      set(o, plvl, get(o, plvl) + 1);
+}
+
+
+token(")")
+{
+  // on token ...
+
+  if (!get(o, iscomment) && !get(o, isstring))
+      set(o, plvl, get(o, plvl) - 1);
+}

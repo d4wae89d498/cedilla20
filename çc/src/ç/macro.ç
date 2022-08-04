@@ -1,0 +1,12 @@
+#include "../../include/ç.h"
+#include "../../include/match.h"
+// macro are defined no matter the ide_compat value
+# define macro CEDILLA_CONCAT(char * cedilla_macro_, __LINE__)(ç_ctx ctx)
+#if ide_compat == 1
+#endif
+#if CEDILLA_TEST == 1
+int main()
+{
+
+}
+#endif
