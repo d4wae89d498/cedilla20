@@ -2,7 +2,7 @@
 - [x] *object*      is a struct that associate a name, along with a type and a value, a destructor and a cloner
 - [x] *object_list* is a linked *list of object*
 - [x] *va_function* is a function such as : *long long(list of va_functions, void *data, va_list)* 
-- [x] *va_lisp*     is a function that parse a string using a *list of va_functions*. 
+- [x] *va_lisp*     is a function that read a list of string using a *list of va_functions*. 
                 It may be used to quickly create DSL languages.
 - [ ] *match*       is a function that *use va_lisp with an object_list in the functions' void ptr* parameter,
                 this object list is parsing context. match provides primitives that allow easier 
