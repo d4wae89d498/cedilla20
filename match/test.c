@@ -81,8 +81,6 @@ int main()
             token      "(", // or token "(" ?
             capture    &s until
                 token  ")",
-
-
             capture    &s until is_space,
         0
     );
