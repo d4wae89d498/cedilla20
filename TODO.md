@@ -8,7 +8,7 @@
                 this object list is parsing context. match provides primitives that allow easier 
                 parsing of string; think aobut it as a readable, extensible, state-oriented, regex replacement.
 - [ ] *çc*          is a program that *takes (almost) same arguments as gcc*. Only arguments order may differ to respect
-                current limitation of : $ çc [args] [flags]. It provides a dynamic macro and token system.
+                current limitation of : $ çc [args] [file.c]. It provides a dynamic macro and token system.
                 You may use it with libmatch, or you may implement an other string parser.
 - [ ] *ç*           is the standard library for the çc command, providing c-pre-processor implementations, along with a series of
                 features desgined as *a C super-set*. 
