@@ -24,11 +24,6 @@ long long   print_int(list **primitives, void*data, va_list ap)
     return 0;
 }
 
-long long eval(list **primitives, void*data, va_list ap)
-{
-    return vva_lisp(primitives, data, ap);
-}
-
 typedef struct 
 {
     char  *name;
@@ -59,7 +54,7 @@ long long    vva_lisp(list **lst, void *data, va_list ap)
         if (!name || !name[0])
             return r;
         named_function = (named_va_function*) it->data;        
-        if (!strcmp(name, named_function->name))
+        if (name == named_function->name || !strcmp(name, named_function->name))
         {
             r = named_function->function(lst, data, ap);
             if (r)
