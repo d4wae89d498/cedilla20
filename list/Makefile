@@ -18,10 +18,10 @@ test: $(NAME) test.c
 run-test: test
 	valgrind ./test
 
-clean: $(DEPS)
+clean: 
 	rm -rf ./test test.dSYM list.o
 
-fclean: $(DEPS)	clean 
+fclean:	clean 
 	rm -rf $(NAME)
 
 

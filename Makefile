@@ -1,23 +1,28 @@
-DEPS 	=	Makefile list/liblist.a object/libobject.a
+DEPS 	=	Makefile 
 
 all: $(DEPS)
 	make -C list $@
 	make -C object $@
-
+	make -C va_lisp $@
+	make -C match $@
 re: fclean all
-
-clean: $(DEPS) 
+clean: 
 	make -C list $@ 
 	make -C object $@
-
-flcean: $(DEPS) clean 
+	make -C va_lisp $@
+	make -C match $@
+fclean:  clean 
 	make -C list $@ 
 	make -C object $@
-
+	make -C va_lisp $@
+	make -C match $@
 test: $(DEPS) 
 	make -C list $@ 
 	make -C object $@
-
+	make -C va_lisp $@
+	make -C match $@
 run-test: $(DEPS) test
 	make -C list $@ 
 	make -C object $@
+	make -C va_lisp $@
+	make -C match $@

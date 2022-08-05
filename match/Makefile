@@ -19,10 +19,10 @@ test: $(DEPS) test.c $(NAME)
 run-test:  test
 	./test
 
-clean: $(DEPS)
+clean: 
 	rm -rf ./test test.dSYM
 
-fclean:	$(DEPS) clean 
+fclean:	clean 
 	rm -rf object.o
 
 
