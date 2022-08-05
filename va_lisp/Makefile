@@ -20,9 +20,7 @@ run-test:  test
 	valgrind ./test
 
 clean: 
-	rm -rf ./test test.dSYM
+	rm -rf va_lisp.o ./test test.dSYM
 
 fclean:	clean 
-	rm -rf object.o
-
-
+	rm -rf $(NAME)
