@@ -3,7 +3,7 @@
 - [x] *object_list* is a linked *list of object*
 - [x] *va_function* is a function such as : *long long(list of va_functions, void *data, va_list)* 
 - [x] *va_lisp*     is a function that read a va_list of va_functions. 
-                    It may be used to quickly create DSL languages.
+                    It may be used to quickly create domain-specific languages (DSL).
 - [ ] *match*       is a function that *use va_lisp with an object_list in the functions' void ptr* parameter,
                     this object list is parsing context. match provides primitives that allow easier 
                     parsing of string; think aobut it as a readable, extensible, state-oriented, regex replacement.
