@@ -1,97 +1,153 @@
-#include "match.c"
+#include "match.h"
 
-void test(object_list **o)//token("(") 
-{
-    object *p = object_get(o, "plvl");
-    if (p)
-        rset(o, new(int, plvl, p->value + 1));
-    else 
-        rset(o, new(int, plvl, 1));
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+list        *match_primitives = 0;
 
-    if (exists(o, plvl))
-        rset(o, new(int, plvl, get(o, plvl, int) + 1));
-    else 
-        rset(o, new(int, plvl, 1));
-}
-
-int     is_str_eq(object_list **o, char **str, va_list ap)
-{
-    char    *arg;
-
-    arg = va_arg(ap, char*);
-
-    return !(strncmp(arg, *str, strlen(arg)));
-}
-
-// returns the size of the pattern
-int     is_space(object_list **o, char **str, va_list ap)
+int   print_int(list **primitives, match_ctx*ctx, va_list *ap)
 {
     (void) ap;
-    (void) o;
+    (void) ctx;
+    (void) primitives;
+    printf("print int\n");
+    printf("%lli\n", va_arg(*ap, long long ));
+    return 0;
+}
+
+
+int   is_digit(list **primitives, match_ctx*ctx, va_list *ap)
+{
+    (void) ap;
+    (void) primitives;
+
     int i = 0;
-    while(isspace(*str[i++]))
-        ;
+    while( (ctx->str[i]) >= '0' && ctx->str[i] <= '9')
+    {
+        i += 1;
+    }
+    printf("SKIPPED: %i\n", i);
     return i;
 }
-// returns the size of the pattern
 
-int     is_word(object_list **o, char **str, va_list ap)
+int   is_space(list **primitives, match_ctx*ctx, va_list *ap)
 {
     (void) ap;
-    (void) o;
-    return isspace(**str);
+    (void) primitives;
+
+    int i = 0;
+    while(isspace(ctx->str[i]))
+    {
+        i += 1;
+    }
+    printf("SKIPPED: %i\n", i);
+    return i;
 }
 
-int     print_state(object_list **o, char **str, va_list ap)
+int   print_str(list **primitives, match_ctx*ctx, va_list *ap)
 {
+    (void) ap;
+    (void) primitives;
 
+    printf("STR: %s\n", ctx->str);
+    return 0;
 }
 
+typedef int    (*match_function)(list **primitives, match_ctx*ctx, va_list *ap);
+
+int   call(list **primitives, match_ctx*ctx, va_list *ap)
+{
+    (void) ap;
+    (void) primitives;
+
+    printf("call\n");
+    match_function f = va_arg(*ap, match_function);
+    return f(primitives, ctx, ap);
+}
+
+
+
+
+int  skip (list **primitives, match_ctx*ctx, va_list* ap)
+{
+    match_function    f = va_arg(*ap, match_function);
+    int         r = 0;
+    printf("skipping...\n");
+    r = f(primitives, ctx, ap);
+    if (!r)
+        return 1;
+    ctx->str += r;
+    return 0;
+}
+
+int   oskip (list **primitives, void*data, va_list *ap)
+{
+        printf("oo skipping...\n");
+    skip(primitives, data, ap);
+    return 1;
+}
+
+void        match_start()
+{
+    if (!match_primitives)
+    {
+      list_add(&match_primitives, new_match_function(print_int));
+      list_add(&match_primitives, new_match_function(skip));
+      list_add(&match_primitives, new_match_function(oskip));
+      list_add(&match_primitives, new_match_function(call));
+
+     }
+}
+
+void        match_end()
+{
+    list_free(match_primitives, free);
+    match_primitives = 0;
+}
+
+
+char    *match(object_list **o, const char **str, ...)
+{
+    (void) o;
+    (void) str;
+
+    char        *r;
+    va_list     ap;
+
+    va_start(ap, str);
+    r = vmatch(o, str, &ap);    
+    va_end(ap);
+    return r;
+}
+
+char    *vmatch(object_list **o, const char **str, va_list *ap)
+{
+    match_ctx ctx = {*o, *str, 0};
+    vva_lisp(&match_primitives, &ctx, ap);
+    *o = ctx.o;
+    *str = ctx.str;
+    return ctx.output;
+}
 
 int main()
 {
-    char *str = "int g(int x);";
+    match_start();
+
+    const char *str = " 2 2  (4 + (9 * 8))";
     object_list *o = 0;
+    match(&o, &str, 
+        "print_int",    10,
+      
+   //      "print_int",  //  5,
+ //       "oskip",         is_space,
+ //       "oskip",        is_digit,
+        "skip",         is_space,  
+        "skip",     is_digit,
+        "call",     print_str,
+   //     "call2", print_str,
+        "skip", is_space, 
 
-    // object_list primitives:
+    "");
 
-    /**
-     *          PARSERS with tokens as key
-     *          
-     * 
-     * */
-
-    // difference between token and macros ??
-/*
-        - token alter lang state
-        - token dont ret
-        - token cant be longer than 1 char or max 1 word
-
-        - macro consume lang state 
-        - macro ret str
-        - any size
-*/
-    char   *s; 
-    match (&o, &str,
-            oskip      is_space limit 5,    // optional skip a 5-len space, fail if longer
-            skip       is_word,
-            skip       is_space,
-            skip       is_word limit 10,    // word len max 10
-            call       print_state,
-            token      "(", // or token "(" ?
-            capture    &s until
-                token  ")",
-            capture    &s until is_space,
-        0
-    );
-
-    printf("CAPTURE : %s\n", s);
-/**
- * 
- *    *      RESTORE STATE IN MATCH FAIL,  AND 'MATCH LIST' aka macro fail 
- *    *      SKIP and other kw in match 
- *    *      MATCH concurencies, IE, match a parenthese outside the 'match_parenthese' macro ???   in macro only ?? create a system for a callback like is_... that dont affect output but only alter params ??
- *                  --> state macro
- * 
- * */
+    match_end();
 }
