@@ -3,39 +3,56 @@
 # include "object_list.h"
 # include "stdarg.h"
 # include "va_lisp.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 #define new_match_function(F) ({                                           \
     named_va_function*  ptr = malloc(sizeof(named_va_function));        \
     *ptr = (named_va_function) {#F, (void*)F};                                  \
     ptr;                                                                \
 })
-
-/*
-const char *limit = "__CEDILLA_LIMIT";
-const char *token = "__CEDILLA_STATE_PARSE"; 
-const char *call  = "__CEDILLA_STATE_CALL";
-
-const char *skip  = "__CEDILLA_SKIP";
-const char *oskip = "__CEDILLA_OSKIP";
-const char *until = "__CEDILLA__UNTIL";
-const char *capture  
-                  = "__CEDILLA__CAPTURE";
-# define _          ,
-
-# define limit      ,limit,
-# define token      token,
-# define call       call,
-# define skip       skip,
-# define oskip      oskip,
-# define until      ,until,
-# define capture    capture,
-# define _          ,
-*/
-  typedef struct {
+typedef struct {
         object_list *o;
         const char  *str;
         char        *output;
     }   match_ctx;
+typedef int    (*match_function)(list **primitives, match_ctx*ctx, va_list *ap);
 
 char    *match(object_list **, const char **str, ...);
 char    *vmatch(object_list **, const char **str, va_list *);
+void    match_start();
+void    match_end();
+// PRIMITIVES :
+int     print_int(list **primitives, match_ctx*ctx, va_list *ap);
+int     is_digit(list **primitives, match_ctx*ctx, va_list *ap);
+int     is_space(list **primitives, match_ctx*ctx, va_list *ap);
+int     print_str(list **primitives, match_ctx*ctx, va_list *ap);
+int     call(list **primitives, match_ctx*ctx, va_list *ap);
+int     skip (list **primitives, match_ctx*ctx, va_list* ap);
+int     oskip (list **primitives, void*data, va_list *ap);
+int     capture (list **primitives, void*data, va_list *ap);
+int     capture (list **primitives, void*data, va_list *ap);
+/*
+//# define parse     parse,
+//... expr
+//  until     
+//  limit 
+//# define call       call,
+//... fptr
+//# define skip       skip,
+// xor
+//# define oskip      oskip,
+// ... fptr
+// until    
+// and/or
+//limit     
+// ... fptr
+//# define capture    capture,
+// ... fptr
+// until    
+// limit    
+# define _          ,
+*/
 #endif

@@ -1,7 +1,7 @@
 CFLAGS 	= -Wall -Werror -Wextra -I../list  -g
 CLIBS  	= -L../list -llist
 DEPS	= Makefile ../list/liblist.a
-NAME   	= libvalist.a
+NAME   	= libvalisp.a
 
 
 all: 	$(NAME)

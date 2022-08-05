@@ -25,6 +25,7 @@
         "type_traits": "c",
         "utility": "c",
         "list": "c",
-        "object.h": "c"
+        "object.h": "c",
+        "va_lisp.h": "c"
     }
 }
