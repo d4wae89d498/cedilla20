@@ -1,20 +1,20 @@
 #include "match.h"
 
-int   print_int(list **primitives, match_ctx*ctx, va_list *ap)
+int   print_int( match_ctx*ctx, va_list ap)
 {
     (void) ap;
     (void) ctx;
-    (void) primitives;
+
     printf("print int\n");
-    printf("%lli\n", va_arg(*ap, long long ));
+    printf("%lli\n", va_arg(ap, long long ));
     return 0;
 }
 
 
-int   is_digit(list **primitives, match_ctx*ctx, va_list *ap)
+int   is_digit( match_ctx*ctx, va_list ap)
 {
     (void) ap;
-    (void) primitives;
+
 
     int i = 0;
     while( (ctx->str[i]) >= '0' && ctx->str[i] <= '9')
@@ -25,10 +25,10 @@ int   is_digit(list **primitives, match_ctx*ctx, va_list *ap)
     return i;
 }
 
-int   is_space(list **primitives, match_ctx*ctx, va_list *ap)
+int   is_space( match_ctx*ctx, va_list ap)
 {
     (void) ap;
-    (void) primitives;
+
 
     int i = 0;
     while(isspace(ctx->str[i]))
@@ -39,44 +39,44 @@ int   is_space(list **primitives, match_ctx*ctx, va_list *ap)
     return i;
 }
 
-int   print_str(list **primitives, match_ctx*ctx, va_list *ap)
+int   print_str( match_ctx*ctx, va_list ap)
 {
     (void) ap;
-    (void) primitives;
+
 
     printf("STR: %s\n", ctx->str);
     return 0;
 }
 
 
-int   call(list **primitives, match_ctx*ctx, va_list *ap)
+int   call( match_ctx*ctx, va_list ap)
 {
     (void) ap;
-    (void) primitives;
+
 
     printf("call\n");
-    match_function f = va_arg(*ap, match_function);
-    return f(primitives, ctx, ap);
+    match_function f = va_arg(ap, match_function);
+    return f( ctx, ap);
 }
 
 
 
 
-int  skip (list **primitives, match_ctx*ctx, va_list* ap)
+int  skip ( match_ctx*ctx, va_list ap)
 {
-    match_function    f = va_arg(*ap, match_function);
+    match_function    f = va_arg(ap, match_function);
     int         r = 0;
     printf("skipping...\n");
-    r = f(primitives, ctx, ap);
+    r = f( ctx, ap);
     if (!r)
         return 1;
     ctx->str += r;
     return 0;
 }
 
-int   oskip (list **primitives, void*data, va_list *ap)
+int   oskip ( void*data, va_list ap)
 {
         printf("oo skipping...\n");
-    skip(primitives, data, ap);
+    skip( data, ap);
     return 1;
 }
