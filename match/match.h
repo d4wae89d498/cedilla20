@@ -24,30 +24,10 @@ int     print_int( match_ctx*ctx, va_list ap);
 int     is_digit( match_ctx*ctx, va_list ap);
 int     is_space( match_ctx*ctx, va_list ap);
 int     print_str( match_ctx*ctx, va_list ap);
-int     call( match_ctx*ctx, va_list ap);
+//int     call( match_ctx*ctx, va_list ap);
 int     skip ( match_ctx*ctx, va_list ap);
 int     oskip ( void*data, va_list ap);
 int     capture ( void*data, va_list ap);
 int     cappture ( void*data, va_list ap);
-/*
-//# define parse     parse,
-//... expr
-//  until     
-//  limit 
-//# define call       call,
-//... fptr
-//# define skip       skip,
-// xor
-//# define oskip      oskip,
-// ... fptr
-// until    
-// and/or
-//limit     
-// ... fptr
-//# define capture    capture,
-// ... fptr
-// until    
-// limit    
-# define _          ,
-*/
+
 #endif

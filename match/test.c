@@ -17,7 +17,7 @@ int main()
  //       "oskip",        is_digit,
        skip,         is_space,  
        skip,     is_digit,
-       call,     print_str,
+       print_str,
    //     "call2", print_str,
         skip, is_space
         
