@@ -23,9 +23,9 @@ run-test:  test
 	./test
 
 clean: 
-	rm -rf ./test test.dSYM
+	rm -rf match.o primitives.o ./test test.dSYM
 
 fclean:	clean 
-	rm -rf object.o
+	rm -rf $(NAME)
 
 
