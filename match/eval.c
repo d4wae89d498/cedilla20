@@ -45,7 +45,7 @@ int eval(match_ctx *ctx, va_list ap)
     {
         printf("match_char: %c\n", ctx->str[0]);
         matched = 0;
-        it = get(ctx->o, macro_list, object_list*);
+        it = vget(ctx->o, macro_list, object_list*);
         while (it)
         {
             o = olist_clone(ctx->o);

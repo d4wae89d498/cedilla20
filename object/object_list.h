@@ -2,7 +2,7 @@
 #define OBJECT_LIST_H
 # include "list.h"
 # include "object.h"
-#define get(LIST, KEY, TYPE) ({                                         \
+#define vget(LIST, KEY, TYPE) ({                                         \
     object *obj;                                                        \
                                                                         \
     obj = object_get(LIST, STR(KEY));                                   \
@@ -20,6 +20,8 @@
 })
 # define set(LIST, KEY, OBJ) object_set(LIST, STR(KEY), OBJ)
 # define rset(LIST, OBJ) olist_set(LIST, OBJ)
+# define get(LIST, KEY) object_get(LIST, STR(KEY))
+
 # define exists(LIST, KEY) object_get(LIST, STR(KEY))
 
 typedef struct s_object_list

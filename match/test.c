@@ -9,9 +9,9 @@ char *parentheses_macro(match_ctx *ctx)
     if (!exists(*o, plvl))
         rset(o, new (int, plvl, 0));
     if (match(ctx, str_is, "("))
-        rset(o, new (int, plvl, get(*o, plvl, int) + 1));
+        get(*o, plvl)->value += 1;
     else if (match(ctx, str_is, ")"))
-        rset(o, new (int, plvl, get(*o, plvl, int) - 1));
+        get(*o, plvl)->value -= 1;    
     else
         return 0;
     printf("parenthese found!\n");
@@ -30,7 +30,7 @@ int dump_plvl(match_ctx *ctx, va_list ap)
 {
     (void)ap;
 
-    printf("plvl=%i\n", get(ctx->o, plvl, int));
+    printf("plvl=%i\n", vget(ctx->o, plvl, int));
     return 1;
 }
 
@@ -59,7 +59,7 @@ int main()
         //  skip, any, until, parse, "(",
           dump_plvl,
           dump_str,
-          capture, &buffer, until, parse, ")"
+          capture, &buffer,  until, parse, ")"
     );
 
     printf("[capture=%s]\n", buffer);

@@ -42,12 +42,12 @@ int main()
     printf("GETTIN VALUE W/ get(...):\n");
 
 
-    printf("'%s'\n", get(tst, testOBJ.s,char*));
+    printf("'%s'\n", vget(tst, testOBJ.s,char*));
 
 
    set(&tst, testOBJ, new(char*, s, "HIII"));
 
-    printf("----'%s'\n", get(tst, testOBJ.s,char*));
+    printf("----'%s'\n", vget(tst, testOBJ.s,char*));
 
 
     printf("GETTIN VALUE:\n");
@@ -55,7 +55,7 @@ int main()
     printf("GETTIN VALUE W/ get(...):\n");
 
 
-    printf("'%s'\n", get(tst, testOBJ.s,char*));
+    printf("'%s'\n", vget(tst, testOBJ.s,char*));
 
 
    // set(&tst, testOBJ, "v");
