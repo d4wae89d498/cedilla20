@@ -11,6 +11,9 @@
 # define limit "__MATCH_LIMIT__"
 # define until "__MATCH_UNTIL__"
 # define aslong  "__MATCH_ASLONG__"
+
+int str_suffix(char **str, char *suffix);
+int str_prefix(char **str, char *prefix);
 typedef struct 
 {
     object_list     *o;

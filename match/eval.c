@@ -1,33 +1,38 @@
 #include "match.h"
 
-static void str_suffix(char **str, char *suffix)
+int str_suffix(char **str, char *suffix)
 {
     char    *new_str;
 
     asprintf(&new_str, "%s%s", *str, suffix);
     free(*str);
     *str = new_str;
+    return (1);
 }
 
-static void str_prefix(char **str, char *prefix)
+int str_prefix(char **str, char *prefix)
 {
     char    *new_str;
 
     asprintf(&new_str, "%s%s", prefix, *str);
     free(*str);
     *str = new_str;
+    return (1);
 }
 
 int eval(match_ctx *ctx, va_list ap)
 {
     int i;
-    char *original_str;
     char *r;
     object_list *it;
     char *ostr;
     int matched;
-    object_list *bkp;
+ 
+    char *original_str;
 
+    object_list *o;
+    char    *output;
+    char    *str;   
 
     original_str = ctx->str;
     ctx->str = ostr = strdup(va_arg(ap, char *));
@@ -39,7 +44,9 @@ int eval(match_ctx *ctx, va_list ap)
         it = get(ctx->o, macro_list, object_list*);
         while (it)
         {
-            bkp = olist_clone(ctx->o);
+            o = olist_clone(ctx->o);
+            str = strdup(ctx->str);
+            output = strdup(ctx->output);
             printf("trying macro %p\n", (void*)it->data->value);
             if ((r = ((macro_function)it->data->value)(ctx)))
             {
@@ -49,7 +56,11 @@ int eval(match_ctx *ctx, va_list ap)
                 goto __parse;
             }
             olist_free(ctx->o);
-            ctx->o = bkp;
+            ctx->o = o;
+            free(ctx->str);
+            ctx->str = str;
+            free(ctx->output);
+            ctx->output = output;
             it = it->next;
         }
         if (!matched)
@@ -58,8 +69,9 @@ int eval(match_ctx *ctx, va_list ap)
             ctx->str += 1;
         }
     }
-    i = ostr - ctx->str;
+    i = strlen(ostr);//ostr - ctx->str;
+   // if (ctx->str != ostr)
     free(ostr);
-    ctx->str = original_str;
+   // ctx->str = original_str;
     return i;
 }

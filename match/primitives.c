@@ -21,15 +21,13 @@ int   print_str( match_ctx*ctx, va_list ap)
     return 1;
 }
 
-
-
-
-
 int capture (match_ctx *ctx, va_list ap)
 {
-    (void) ctx;
-    (void) ap;
-    return 0;
+    char **str;
+    str = va_arg(ap, char **);
+
+    match_conditions  c = get_match_conditions(ap, default_conditions);
+    return MATCH_COND(str_suffix(str, (char[2]) { ctx->str[i], 0} ));
 }
 
 int     skip ( match_ctx*ctx, va_list ap)
@@ -55,9 +53,8 @@ int     oskip ( match_ctx*ctx,  va_list ap)
 int     parse(match_ctx *ctx, va_list ap)
 {
     char *str;
-    match_conditions  c = get_match_conditions(ap, default_conditions);
-
     str = va_arg(ap, char *);
+    match_conditions  c = get_match_conditions(ap, default_conditions);
     if (!match(ctx, str_is, str, limit, c._limit, until, c._until, aslong, c._aslong))
         return 0;
     match(ctx, skip, eval, str);
