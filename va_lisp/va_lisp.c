@@ -8,17 +8,16 @@
 int vva_lisp(void *data, va_list ap)
 {
     va_function f;
-
     int r;
 
-    r = 0;
+    r = 1;
     while (1)
     {
         f = (va_function) va_arg(ap, void*);
         if (!f)
             return 1;
-        r = r || (f(data, ap));
-        if (r)
+        r = r && (f(data, ap));
+        if (!r)
             return r;
     }
 }

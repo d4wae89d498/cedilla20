@@ -27,6 +27,9 @@
         "list": "c",
         "object.h": "c",
         "va_lisp.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "sstream": "c",
+        "string.h": "c",
+        "ctype.h": "c"
     }
 }

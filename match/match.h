@@ -8,26 +8,32 @@
 #include <string.h>
 #include <ctype.h>
 
-# define match(OBJECT_LIST, STR, ...) _match(OBJECT_LIST, STR, __VA_ARGS__, (long long)0)
+# define match(CTX, ...) _match(CTX, __VA_ARGS__, (long long)0)
 
 typedef struct {
         object_list *o;
-        const char  *str;
+        char        *str;
         char        *output;
     }   match_ctx;
-typedef int    (*match_function)( match_ctx*ctx, va_list ap);
 
-char    *_match(object_list **, const char **str, ...);
-char    *vmatch(object_list **, const char **str, va_list);
-// PRIMITIVES :
+typedef char    *(*macro_function)(match_ctx *ctx); 
+typedef int     (*match_function)(match_ctx *ctx, va_list ap);
+
+char    *_match(match_ctx *ctx, ...);
+char    *vmatch(match_ctx *ctx, va_list);
+// primitives.c
+int     skip ( match_ctx*ctx, va_list ap);
+int     oskip ( match_ctx*data, va_list ap);
+int     capture ( match_ctx*data, va_list ap);
+int     parse(match_ctx *ctx, va_list ap);
 int     print_int( match_ctx*ctx, va_list ap);
+int     print_str( match_ctx*ctx, va_list ap);
+// is.c
 int     is_digit( match_ctx*ctx, va_list ap);
 int     is_space( match_ctx*ctx, va_list ap);
-int     print_str( match_ctx*ctx, va_list ap);
-//int     call( match_ctx*ctx, va_list ap);
-int     skip ( match_ctx*ctx, va_list ap);
-int     oskip ( void*data, va_list ap);
-int     capture ( void*data, va_list ap);
-int     cappture ( void*data, va_list ap);
+int     is_digit( match_ctx*ctx, va_list ap);
+int     str_is( match_ctx*ctx, va_list ap);
+
+
 
 #endif

@@ -35,7 +35,7 @@ int main()
 
 
     object_list *tst = 0;
-    olist_set(&tst, dobject_new("object_list", "testOBJ", olist_clone(om), (void(*)(void*))olist_free, olist_clone));
+    olist_set(&tst, dobject_new("object_list*", "testOBJ", olist_clone(om), (void(*)(void*))olist_free, olist_clone));
 
     printf("GETTIN VALUE:\n");
     printf("%s\n", (char*)(olist_get_object((void*)olist_get_object(tst, "testOBJ")->value, "s")->value));

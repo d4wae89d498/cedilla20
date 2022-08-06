@@ -7,7 +7,7 @@ int   print_5(void*data, va_list ap)
     (void) ap;
     (void) data;
     printf("5\n");
-    return 0;
+    return 1;
 }
 
 int   print_int(void*data, va_list ap)
@@ -15,7 +15,7 @@ int   print_int(void*data, va_list ap)
     (void) ap;
     (void) data;
     printf("%i\n", va_arg(ap, int ));
-    return 0;
+    return 1;
 }
 
 

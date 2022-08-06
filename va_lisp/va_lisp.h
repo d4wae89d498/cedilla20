@@ -6,5 +6,5 @@ typedef int(*va_function)(void *data, va_list ap);
 int    vva_lisp(void *data, va_list ap);
 int    va_lisp(void *data, ...);
 
-#define lisp(B, ...) va_lisp(B, __VA_ARGS__, 0)
+#define lisp(B, ...) va_lisp(B, __VA_ARGS__, (long long) 0)
 #endif

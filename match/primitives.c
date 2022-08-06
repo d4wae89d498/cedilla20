@@ -1,4 +1,17 @@
 #include "match.h"
+#include "eval.c"
+#include "is.c"
+
+int parse(match_ctx *ctx, va_list ap)
+{
+    char *str;
+
+    str = va_arg(ap, char *);
+    if (!match(ctx, str_is, str))
+        return 0;
+    match(ctx, skip, eval, str);
+    return strlen(str);
+}
 
 int   print_int( match_ctx*ctx, va_list ap)
 {
@@ -7,36 +20,7 @@ int   print_int( match_ctx*ctx, va_list ap)
 
     printf("print int\n");
     printf("%lli\n", va_arg(ap, long long ));
-    return 0;
-}
-
-
-int   is_digit( match_ctx*ctx, va_list ap)
-{
-    (void) ap;
-
-
-    int i = 0;
-    while( (ctx->str[i]) >= '0' && ctx->str[i] <= '9')
-    {
-        i += 1;
-    }
-    printf("SKIPPED: %i\n", i);
-    return i;
-}
-
-int   is_space( match_ctx*ctx, va_list ap)
-{
-    (void) ap;
-
-
-    int i = 0;
-    while(isspace(ctx->str[i]))
-    {
-        i += 1;
-    }
-    printf("SKIPPED: %i\n", i);
-    return i;
+    return 1;
 }
 
 int   print_str( match_ctx*ctx, va_list ap)
@@ -45,22 +29,8 @@ int   print_str( match_ctx*ctx, va_list ap)
 
 
     printf("STR: %s\n", ctx->str);
-    return 0;
+    return 1;
 }
-
-
-int   call( match_ctx*ctx, va_list ap)
-{
-    (void) ap;
-
-
-    printf("call\n");
-    match_function f = va_arg(ap, match_function);
-    return f( ctx, ap);
-}
-
-
-
 
 int  skip ( match_ctx*ctx, va_list ap)
 {
@@ -71,12 +41,13 @@ int  skip ( match_ctx*ctx, va_list ap)
     if (!r)
         return 1;
     ctx->str += r;
-    return 0;
-}
-
-int   oskip ( void*data, va_list ap)
-{
-        printf("oo skipping...\n");
-    skip( data, ap);
     return 1;
 }
+
+int   oskip ( match_ctx*ctx,  va_list ap)
+{
+    printf("oo skipping...\n");
+    skip( ctx, ap);
+    return 1;
+}
+

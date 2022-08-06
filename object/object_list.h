@@ -13,7 +13,7 @@
     }                                                                   \
     if (strcmp(STR(TYPE), obj->type))                                   \
     {                                                                   \
-        printf("ERROR: ACCESSING VALUE OF WRONG TYPE");                 \
+        printf("ERROR: ACCESSING VALUE OF WRONG TYPE, ASKED: '%s' BUT OBJ IS '%s'\n", STR(TYPE), obj->type);\
         exit(0);                                                        \
     }                                                                   \
     (TYPE) obj->value;                                                  \
