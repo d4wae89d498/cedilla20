@@ -1,0 +1,25 @@
+./test
+print int
+10
+skipping...
+ i = 0
+ i = 0
+ i = 2
+skipping...
+ i = 1
+STR:  2  (4 + (9 * 8))
+skipping...
+ i = 1
+skipping...
+ i = 1
+skipping...
+ i = 2
+ i = 0
+skipping...
+match_char: (
+trying macro 0x109240140
+pmacro called...
+ i = 0
+parenthese found!
+plvl=1
+(null)

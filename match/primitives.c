@@ -12,7 +12,7 @@ int   print_int( match_ctx*ctx, va_list ap)
     return 1;
 }
 
-int   print_str( match_ctx*ctx, va_list ap)
+int   dump_str( match_ctx*ctx, va_list ap)
 {
     (void) ap;
 
@@ -21,13 +21,42 @@ int   print_str( match_ctx*ctx, va_list ap)
     return 1;
 }
 
+char logme(char c)
+{
+
+    printf("-- %c\n", c);
+    return c;
+}
+
 int capture (match_ctx *ctx, va_list ap)
 {
     char **str;
     str = va_arg(ap, char **);
 
+ //   printf("withing capture.. [%s]\n", ctx->str);
     match_conditions  c = get_match_conditions(ap, default_conditions);
-    return MATCH_COND(str_suffix(str, (char[2]) { ctx->str[i], 0} ));
+
+    printf ("until:: %p\n", c._until);
+    printf ("limit:: %d [%s]\n", c._limit, ctx->str);
+    printf("\n\n\n");
+
+
+    return MATCH_COND(str_suffix(str, (char[2]) { logme(ctx->str[i]), 0} ));
+  /*  return 
+    ({ 
+        int i = 0; if (c._limit < 0) c._limit = INT_MAX; 
+        while (i < c._limit && ctx->str[i] && ((c._aslong && c._aslong(ctx, ap)) || 1)) 
+        { 
+         //   printf("capturing .. i = %i\n", i);
+            if (!(str_suffix(str, (char[2]) { ctx->str[i], 0} ))) 
+                break ; 
+            i += 1; 
+            if (i >= c._limit || (c._until && c._until(ctx, ap))) 
+                break ; 
+        } 
+        printf (" i = %i\n", i); i;
+     });*/
+
 }
 
 int     skip ( match_ctx*ctx, va_list ap)

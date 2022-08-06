@@ -37,7 +37,7 @@ int     oskip ( match_ctx*data, va_list ap);
 int     capture ( match_ctx*data, va_list ap);
 int     parse(match_ctx *ctx, va_list ap);
 int     print_int( match_ctx*ctx, va_list ap);
-int     print_str( match_ctx*ctx, va_list ap);
+int     dump_str( match_ctx*ctx, va_list ap);
 // is.c
 int     is_digit( match_ctx*ctx, va_list ap);
 int     is_space( match_ctx*ctx, va_list ap);

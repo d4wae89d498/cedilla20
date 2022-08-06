@@ -4,6 +4,8 @@ int str_suffix(char **str, char *suffix)
 {
     char    *new_str;
 
+    if (!*str)
+        *str = strdup("");
     asprintf(&new_str, "%s%s", *str, suffix);
     free(*str);
     *str = new_str;
@@ -14,6 +16,8 @@ int str_prefix(char **str, char *prefix)
 {
     char    *new_str;
 
+    if (!*str)
+        *str = strdup("");
     asprintf(&new_str, "%s%s", prefix, *str);
     free(*str);
     *str = new_str;
@@ -72,6 +76,6 @@ int eval(match_ctx *ctx, va_list ap)
     i = strlen(ostr);//ostr - ctx->str;
    // if (ctx->str != ostr)
     free(ostr);
-   // ctx->str = original_str;
+    ctx->str = original_str;
     return i;
 }

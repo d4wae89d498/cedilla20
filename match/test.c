@@ -36,6 +36,9 @@ int dump_plvl(match_ctx *ctx, va_list ap)
 
 int main()
 {
+    // LIMITATION :: [until / aslong / limit] may be built with a full sentence
+    // TODO :: fix capture that only capture first char
+
     match_ctx ctx =
         {
             .o = 0,
@@ -47,15 +50,17 @@ int main()
           print_int, 10,
           skip, is_space, limit, 5, until, is_digit,
           skip, is_digit,
-          print_str,
+          dump_str,
           skip, is_space,
           skip, is_digit,
           skip, is_space,
+          dump_str,
           parse, "(",
-          skip, any, until, parse, "(",
+        //  skip, any, until, parse, "(",
           dump_plvl,
-          capture, &buffer, until, str_is, ")"
+          dump_str,
+          capture, &buffer, until, parse, ")"
     );
 
-    printf("%s\n", buffer);
+    printf("[capture=%s]\n", buffer);
 }
