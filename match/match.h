@@ -3,22 +3,29 @@
 # include "object_list.h"
 # include "stdarg.h"
 # include "va_lisp.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
+# include <stdio.h>
+# include <string.h>
+# include <ctype.h>
+# include <limits.h>
 # define match(CTX, ...) _match(CTX, __VA_ARGS__, (long long)0)
-
-typedef struct {
-        object_list *o;
-        char        *str;
-        char        *output;
-    }   match_ctx;
-
-typedef char    *(*macro_function)(match_ctx *ctx); 
-typedef int     (*match_function)(match_ctx *ctx, va_list ap);
-
+# define limit "__MATCH_LIMIT__"
+# define until "__MATCH_UNTIL__"
+# define aslong  "__MATCH_ASLONG__"
+typedef struct 
+{
+    object_list     *o;
+    char            *str;
+    char            *output;
+}   match_ctx;
+struct s_conditions; 
+typedef char        *(*macro_function)(match_ctx *ctx); 
+typedef int         (*match_function)(match_ctx *ctx, va_list ap);
+typedef struct s_conditions
+{
+    int             _limit;
+    match_function  _until;
+    match_function  _aslong;
+} match_conditions;
 char    *_match(match_ctx *ctx, ...);
 char    *vmatch(match_ctx *ctx, va_list);
 // primitives.c

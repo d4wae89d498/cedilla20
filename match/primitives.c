@@ -2,17 +2,6 @@
 #include "eval.c"
 #include "is.c"
 
-int parse(match_ctx *ctx, va_list ap)
-{
-    char *str;
-
-    str = va_arg(ap, char *);
-    if (!match(ctx, str_is, str))
-        return 0;
-    match(ctx, skip, eval, str);
-    return strlen(str);
-}
-
 int   print_int( match_ctx*ctx, va_list ap)
 {
     (void) ap;
@@ -32,22 +21,45 @@ int   print_str( match_ctx*ctx, va_list ap)
     return 1;
 }
 
-int  skip ( match_ctx*ctx, va_list ap)
+
+
+
+
+int capture (match_ctx *ctx, va_list ap)
 {
-    match_function    f = va_arg(ap, match_function);
+    (void) ctx;
+    (void) ap;
+    return 0;
+}
+
+int     skip ( match_ctx*ctx, va_list ap)
+{
+    match_function f =  (void*) va_arg(ap, match_function);
+
     int         r = 0;
     printf("skipping...\n");
     r = f( ctx, ap);
     if (!r)
-        return 1;
+        return 0;
     ctx->str += r;
     return 1;
 }
 
-int   oskip ( match_ctx*ctx,  va_list ap)
+int     oskip ( match_ctx*ctx,  va_list ap)
 {
     printf("oo skipping...\n");
     skip( ctx, ap);
     return 1;
 }
 
+int     parse(match_ctx *ctx, va_list ap)
+{
+    char *str;
+    match_conditions  c = get_match_conditions(ap, default_conditions);
+
+    str = va_arg(ap, char *);
+    if (!match(ctx, str_is, str, limit, c._limit, until, c._until, aslong, c._aslong))
+        return 0;
+    match(ctx, skip, eval, str);
+    return strlen(str);
+}

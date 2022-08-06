@@ -32,13 +32,13 @@ int main()
     match_ctx ctx =
     {
         .o      = 0,
-        .str    = " 1 2  (4 + (9 * 8))",
+        .str    = "  1 2  (4 + (9 * 8))",
         .output = strdup("")
     };
     set(&(ctx.o), macro_list, new (macro_function, m1, parentheses_macro));
     match(&ctx,
           print_int, 10,
-          skip, is_space,
+          skip, is_space, limit, 1, // limits, 3,
           skip, is_digit,
           print_str,
           skip, is_space,
