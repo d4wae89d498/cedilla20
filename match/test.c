@@ -1,9 +1,5 @@
 #include "match.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
 char *parentheses_macro(match_ctx *ctx)
 {
     object_list     **o = &(ctx->o);
