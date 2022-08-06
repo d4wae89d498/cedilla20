@@ -36,7 +36,7 @@ int dump_plvl(match_ctx *ctx, va_list ap)
 
 int main()
 {
-    // LIMITATION :: [until / aslong / limit] may be built with a full sentence
+    // LIMITATION :: only last [until / aslong / limit] may be built with a full sentence
     // TODO :: fix capture that only capture first char
 
     match_ctx ctx =
