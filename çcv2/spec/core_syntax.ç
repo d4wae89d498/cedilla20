@@ -2,7 +2,7 @@
 
 macro
 {
-    if (!strncmp(*str, "__G1__", 6) && !ctx->is.str)
+    if (!strncmp(*str, "__G1__", 6))
     {
         *str += 6;
         return "41";     
@@ -12,7 +12,7 @@ macro
 
 macro
 {
-    if (!strncmp(*str, "__G2__", 6) && !ctx->is.str)
+    if (!strncmp(*str, "__G2__", 6))
     {
         *str += 6;
         return strdup((char[7]) {'_', '_', 'G', '1', '_', '_', 0});     
