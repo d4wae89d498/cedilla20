@@ -185,7 +185,7 @@ int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
     }
     if (ctx->levels.braces)
     {
-        printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.collumns);
+        printf("ERROR: '}' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.collumns);
         exit(1);
     }
     register_macro(macros, new_str); 
