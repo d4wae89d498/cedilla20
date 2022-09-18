@@ -15,12 +15,12 @@ macro
     if (!strncmp(*str, "__G2__", 6) && !ctx->is.str)
     {
         *str += 6;
-        return "__G1__";     
+        return strdup((char[7]) {'_', '_', 'G', '1', '_', '_', 0});     
     }
     return 0;
 }
 
 int main()
 {
-    printf("%i\n", __G2__);
+    printf("%i\n", __G2__); // print 41
 }
