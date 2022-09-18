@@ -1,0 +1,26 @@
+#include "../cedilla.h"
+
+macro
+{
+    if (!strncmp(*str, "__G1__", 6) && !ctx->is.str)
+    {
+        *str += 6;
+        return "41";     
+    }
+    return 0;
+}
+
+macro
+{
+    if (!strncmp(*str, "__G2__", 6) && !ctx->is.str)
+    {
+        *str += 6;
+        return "__G1__";     
+    }
+    return 0;
+}
+
+int main()
+{
+    printf("%i\n", __G2__);
+}
