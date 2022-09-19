@@ -2,6 +2,7 @@
     "files.associations": {
         "libc.h": "c",
         "cedilla.h": "c",
-        "*.ç": "c"
+        "*.ç": "c",
+        "mman.h": "c"
     }
 }

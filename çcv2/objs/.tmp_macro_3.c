@@ -1,0 +1,29 @@
+#include "cedilla.h"
+
+char *cedilla_macro_3(macro_list **macros, char **src, parser_ctx *ctx) { 
+    if (!ctx_is_code(*ctx) && !strncmp(*src, "comment_compile_time_assert_str_eq", 34))
+    {
+        *src += 34;
+        while (isspace(**src))
+            *src += 1;
+        try_apply_macros(macros, src, ctx);
+        int a = 0;
+        while (isdigit(**src))
+        {
+            a *= 10;
+            a += **src - '0';
+            *src += 1;
+        }
+        while (isspace(**src))
+            *src += 1;
+        int b = 0;
+        while (isdigit(**src))
+        {
+            b *= 10;
+            b += **src - '0';
+            *src += 1;
+        }
+        assert(a == b);
+    }
+    return (0);
+ }

@@ -1,20 +1,34 @@
 #include "../cedilla.h"
 
+#if TEST
+
+macro 
+{
+    assert(IDE_COMPAT == 0);
+    return 0;
+}
+
+#if IDE_COMPAT
+# define __G1__ 0
+#endif
 macro
 {
-    if (!strncmp(*str, "__G1__", 6) && !ctx->is.str)
+    if (!strncmp(*src, "__G1__", 6) && !ctx->is.str)
     {
-        *str += 6;
+        *src += 6;
         return "41";     
     }
     return 0;
 }
 
+#if IDE_COMPAT
+# define __G2__ 0
+#endif
 macro
 {
-    if (!strncmp(*str, "__G2__", 6) && !ctx->is.str)
+    if (!strncmp(*src, "__G2__", 6) && !ctx->is.str)
     {
-        *str += 6;
+        *src += 6;
         return strdup((char[7]) {'_', '_', 'G', '1', '_', '_', 0});     
     }
     return 0;
@@ -22,5 +36,8 @@ macro
 
 int main()
 {
-    printf("%i\n", __G2__); // print 41
+    assert(IDE_COMPAT == 0);
+    assert(__G2__ == 41);
+    printf("OK\n"); 
 }
+#endif
