@@ -13,7 +13,11 @@ macro
 #endif
 macro
 {
+<<<<<<< HEAD
     if (!strncmp(*src, "__G1__", 6) && !ctx->is.str)
+=======
+    if (!strncmp(*str, "__G1__", 6))
+>>>>>>> 273ede221b73511bf6ea61572e30cf59b2e24cb5
     {
         *src += 6;
         return "41";     
@@ -26,7 +30,11 @@ macro
 #endif
 macro
 {
+<<<<<<< HEAD
     if (!strncmp(*src, "__G2__", 6) && !ctx->is.str)
+=======
+    if (!strncmp(*str, "__G2__", 6))
+>>>>>>> 273ede221b73511bf6ea61572e30cf59b2e24cb5
     {
         *src += 6;
         return strdup((char[7]) {'_', '_', 'G', '1', '_', '_', 0});     
@@ -36,8 +44,13 @@ macro
 
 int main()
 {
+<<<<<<< HEAD
     assert(IDE_COMPAT == 0);
     assert(__G2__ == 41);
     printf("OK\n"); 
 }
 #endif
+=======
+    printf("%i\n", __G2__); // print 41
+}
+>>>>>>> 273ede221b73511bf6ea61572e30cf59b2e24cb5
