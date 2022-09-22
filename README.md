@@ -46,7 +46,7 @@ Objectifs:
 Ressources académiques: 
 
 - [Coq, INRIA, 1984](https://coq.inria.fr/refman/user-extensions/syntax-extensions.html)
-- [OCaml, INRIA, 1996](https://caml.inria.fr/pub/docs/tutorial-camlp4/tutorial007.html)
+- [Extending the syntax of OCaml, Daniel de Rauglaudre, INRIA, 2003](https://caml.inria.fr/pub/docs/tutorial-camlp4/tutorial007.html)
 - [The Nemerle programming language, Jetbrains, 2003](https://github.com/rsdn/nemerle/wiki/Syntax-extensions)
 - [The Katahdin programming language, Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
 - [Modern Extensible Languages, Daniel Zingaro, 2007](http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport47.pdf) 
