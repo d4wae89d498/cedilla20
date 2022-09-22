@@ -20,7 +20,7 @@ test: $(DEPS) test.c $(NAME)
 	cc $(CFLAGS) $(CLIBS) test.c $(NAME) -o test
 
 run-test:  test
-	valgrind ./test
+	./test
 
 clean: 
 	rm -rf object.o object_list.o ./test test.dSYM

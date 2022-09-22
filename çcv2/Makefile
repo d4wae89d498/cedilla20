@@ -2,10 +2,12 @@ re: clean all
 
 headers=cedilla.h
 
-all: compiler core_syntax c99  
+all: compiler test
 
 compiler: çc.c 
 	cc -g çc.c -o çc 
+
+test: core_syntax
 
 core_syntax: spec/core_syntax.ç $(headers) compiler
 	./çc $< > objs/.tmp_$@.c
@@ -23,9 +25,8 @@ match: spec/match.ç $(headers) compiler
 	./çc $< > objs/.tmp_$@.c
 	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@   
 
-test: all 
+run-test: test 
 	./objs/core_syntax
-	./objs/c99
 
 re: fclean all
 

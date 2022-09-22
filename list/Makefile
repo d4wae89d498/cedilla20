@@ -16,7 +16,7 @@ test: $(NAME) test.c
 	cc $(CFLAGS) test.c $(NAME) -o test 
 
 run-test: test
-	valgrind ./test
+	./test
 
 clean: 
 	rm -rf ./test test.dSYM list.o
