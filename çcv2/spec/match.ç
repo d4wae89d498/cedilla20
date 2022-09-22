@@ -1,0 +1,27 @@
+#include "../cedilla.h"
+
+#if TEST
+macro 
+{
+    char    *buffer;
+
+    if (match(
+        0
+       /* skip(parse("(")),          
+        skip(isstr("ltest")),      
+        skip(issep()),
+        skip(capture(&buffer, until_0)),
+        skip(isstr(")"))  */     
+    ))
+    {
+     //   return (buffer);
+    }
+    return 0;
+}
+
+int     main()
+{
+    assert(!strcmp("(ltest   42)", "42"));
+}
+
+#endif

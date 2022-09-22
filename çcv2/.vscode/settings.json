@@ -3,6 +3,7 @@
         "libc.h": "c",
         "cedilla.h": "c",
         "*.ç": "c",
-        "mman.h": "c"
+        "mman.h": "c",
+        "match.h": "c"
     }
 }

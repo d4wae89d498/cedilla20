@@ -1,6 +1,5 @@
 #include "cedilla.h"
 
-
 int main(int ac, char **av)
 {
     if (ac != 2)
@@ -15,7 +14,8 @@ int main(int ac, char **av)
     macro_list  *macros = 0;
     parser_ctx  ctx = (parser_ctx) {
         .is = {.comment = 0, .comments = 0, .str = 0, .chr = 0},
-        .levels = {.braces = 0, .parentheses = 0, .depth = 0, .collumns = 0, .lines = 0}
+        .levels = {.braces = 0, .parentheses = 0, .depth = 0, .columns = 0, .lines = 0},
+        .file = av[1]
     };
     while (*str)
     {

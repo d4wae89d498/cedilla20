@@ -1,0 +1,3 @@
+// force defer free on assignation if assigning from a function that returns heap
+// cant assign to anywhat else than a result of a class construct ?
+// may require class before 

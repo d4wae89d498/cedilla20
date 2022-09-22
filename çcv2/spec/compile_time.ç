@@ -1,0 +1,70 @@
+#include "../cedilla.h"
+
+#if IDE_COMPAT
+# define compile_time
+# define compile_time_include(...)
+# define compile_time_run(...) (long long)0
+#endif
+
+macro 
+{
+    if (ctx_is_root(*ctx))
+    {
+        char *new_src = "";
+        if (!strncmp(*src, "compile_time", 12) && isspace(*(*src + 12)))
+        {
+            fprintf(stderr, "compiletime!!\n");
+            *src += 13;
+            while (isspace(**src))
+                *src += 1;
+            while (!ctx->levels.braces && **src)
+            {
+                try_register_macros(macros, src, ctx); 
+                if (!try_apply_macros(macros, src, ctx))
+                {
+                    asprintf(&new_src, "%s%c", new_src ? new_src : "", **src);
+                    cursor_incr(src, ctx, 1);       
+                } 
+                                fprintf(stderr, "%s\n", new_src);
+
+            }
+                while (ctx->levels.braces && **src)
+                {
+                    try_register_macros(macros, src, ctx); 
+                    if (!try_apply_macros(macros, src, ctx))
+                    {
+                        asprintf(&new_src, "%s%c", new_src ? new_src : "", **src);
+                        cursor_incr(src, ctx, 1);       
+                    } 
+                }    
+            if (!**src)
+            {
+               // fprintf(stderr, "ERROR: expected a braces pair after a compile_time declaration.\n");
+              //  exit (0);
+            }
+            else
+            {
+                fprintf(stderr, "%s\n", new_src);
+                return 0;
+            }
+            
+         //   fprintf(stderr, "compile_time %s\n", new_src);
+        }
+    }
+    return (0);
+}
+
+#if TEST
+
+int main()
+{
+    printf("OK\n");
+    return (0);
+}
+
+#endif
+/*
+compile_time int f()
+{
+    return 0;
+}*/

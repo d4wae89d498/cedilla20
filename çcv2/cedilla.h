@@ -16,6 +16,11 @@
 # include "stdio.h"
 # include "assert.h"
 
+typedef struct s_compile_time_list
+{
+    char                   *item;
+    struct s_macro_list    *next;   
+} compile_time_list;
 typedef struct s_parser_ctx
 {
     struct 
@@ -31,9 +36,11 @@ typedef struct s_parser_ctx
         int brackets:       16;
         int braces:         16;
         int depth:          16;
-        int collumns:       16;
+        int columns:       16;
         int lines:          16;
     } levels;
+    char *file;
+
 } parser_ctx;
 struct s_macro_list;
 typedef char*   macro (struct s_macro_list **macros, char **str, parser_ctx *ctx);
@@ -84,8 +91,11 @@ char *format_mname(int count)
     return str;
 }
 
-void     cursor_incr(char **str, parser_ctx *ctx, int i)
+int     cursor_incr(char **str, parser_ctx *ctx, int i)
 {
+    int     y;
+
+    y = 0;
     while (i && **str)
     {
         if (!ctx->levels.depth)
@@ -93,27 +103,35 @@ void     cursor_incr(char **str, parser_ctx *ctx, int i)
             if (*((*str) + i) == '\n')
             {
                 ctx->levels.lines += 1;
-                ctx->levels.collumns = 1;
+                ctx->levels.columns = 1;
             }
             else
             {
-                ctx->levels.collumns += 1;
+                ctx->levels.columns += 1;
             }
         }
         *str += 1;
         i -= 1;
+        y += 1;
     }
+    return (y);
 }
 
-static void *compile_macro(char *str)
+void *compile_macro(char *str, parser_ctx *ctx)
 {
     int     fd;
     char    *cmd;
 
+    fprintf(stderr, "compiling macro from file: %s ...\n", ctx->file);
+
+//    printf("");
+
     fd = open(format_fname(macro_count), O_WRONLY | O_CREAT | O_TRUNC, 0777);
     dprintf(fd, 
         "#include \"cedilla.h\"\n"
-        "\n"
+        "#define main main4242\n"
+        "#undef IDE_COMPAT\n"
+        "#define IDE_COMPAT 0\n"
         "char *%s(macro_list **macros, char **src, parser_ctx *ctx) { %s }\n",
         format_mname(macro_count),
         str
@@ -137,14 +155,14 @@ static void *compile_macro(char *str)
     return r;
 }
 
-static void register_macro(macro_list **macros, char *str)
+static void register_macro(macro_list **macros, char *str, parser_ctx *ctx)
 {
     macro_list *it;
 
     if (!*macros)
     {
         *macros = malloc(sizeof(macro_list));
-        (*macros)->item = compile_macro(str);
+        (*macros)->item = compile_macro(str, ctx);
         (*macros)->next = 0;
         macro_count += 1;
         return ;
@@ -155,7 +173,7 @@ static void register_macro(macro_list **macros, char *str)
         if (!it->next)
         {
             it->next = malloc(sizeof(macro_list));
-            it->next->item = compile_macro(str);
+            it->next->item = compile_macro(str, ctx);
             it->next->next = 0;
             macro_count += 1;
             return ;
@@ -178,9 +196,9 @@ int     try_apply_macros(macro_list **macros, char **str, parser_ctx *ctx)
             asprintf(str, "%s%s", prefix, *str);
             // new_str ///
             ctx->levels.depth += 1;
-            try_register_macros(macros, str, ctx); 
-            try_apply_macros(macros, str, ctx);
-            return (1);
+            int x = try_register_macros(macros, str, ctx); 
+            int y = try_apply_macros(macros, str, ctx);
+            return (strlen(prefix) + x + y);
         }
         it = it->next;
     }
@@ -190,31 +208,34 @@ int     try_apply_macros(macro_list **macros, char **str, parser_ctx *ctx)
 
 int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
 {
+    int r;
+
+    r = 0;
     if (!ctx_is_root(*ctx))
         return (0);
      if (strncmp(*str , "macro", 5))
         return (0);
     if (!isspace((*str)[5]))
         return (0);
-    cursor_incr(str, ctx, 5);
+    r += cursor_incr(str, ctx, 5);
     while (isspace(**str))
     {
-        cursor_incr(str, ctx, 1);
+        r += cursor_incr(str, ctx, 1);
     }
     if (**str != '{')
     {
-        printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.collumns);
+        printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.columns);
         exit(1);
     } 
     ctx->levels.braces = 1;
-    cursor_incr(str, ctx, 1);
+    r += cursor_incr(str, ctx, 1);
     char *new_str = 0;
     while (ctx->levels.braces && *str)
     {
         if (!try_apply_macros(macros, str, ctx))
         {
             asprintf(&new_str, "%s%c", new_str ? new_str : "", **str);
-            cursor_incr(str, ctx, 1);       
+            r += cursor_incr(str, ctx, 1);       
         }
         if (**str == '{' && ctx_is_code(*ctx))
         {
@@ -225,18 +246,19 @@ int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
             ctx->levels.braces -= 1;
             if (!ctx->levels.braces)
             {
-                cursor_incr(str, ctx, 1);
+                r += cursor_incr(str, ctx, 1);
             }
         }
     }
     if (ctx->levels.braces)
     {
-        printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.collumns);
+        printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.columns);
         exit(1);
     }
-    register_macro(macros, new_str); 
-    return (1);
+    register_macro(macros, new_str, ctx); 
+    return (r);
 }
+# include "match.h"
 
 # define CEDILLA_CONCAT2(X, Y)  X##Y
 # define CEDILLA_CONCAT(X, Y)   CEDILLA_CONCAT2(X, Y)
@@ -248,5 +270,6 @@ int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
 # define each_test(x) , (x + 1)
 # define dump_macro(...) printf("[%s:%i dump_macro] %s\n", __FILE__, __LINE__, apply(str, __VA_ARGS__));
 # define cdump(...) message(apply(str, __VA_ARGS__))
-# define macro CEDILLA_CONCAT(char * cedilla_macro_, __LINE__)(macro_list **macros, char **str, parser_ctx *ctx)
+# define macro CEDILLA_CONCAT(char * cedilla_macro_, __LINE__)(macro_list **macros, char **src, parser_ctx *ctx)
+
 #endif

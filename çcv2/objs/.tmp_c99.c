@@ -2,14 +2,24 @@
 
 
 
+
+
+
 #if TEST
-
-#if IDE_COMPAT
-#define __BRACKETS__ 0
-#define __PARENTHESES__ 0
-#define __BRACES__ 0
+#undef TEST
+#define TEST 0
+# include "../spec/compile_time.ç"
+#undef TEST
+#define TEST 1
 #endif
+# if IDE_COMPAT
+#  define __BRACKETS__ 0
+#  define __PARENTHESES__ 0
+#  define __BRACES__ 0
+# endif
 
+
+#if TEST
 
 
 

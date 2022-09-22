@@ -2,7 +2,7 @@ re: clean all
 
 headers=cedilla.h
 
-all: core_syntax c99
+all: compiler core_syntax c99  
 
 compiler: çc.c 
 	cc -g çc.c -o çc 
@@ -13,7 +13,15 @@ core_syntax: spec/core_syntax.ç $(headers) compiler
 
 c99: spec/c99.ç $(headers) compiler
 	./çc $< > objs/.tmp_$@.c
-	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@  
+	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@ 
+
+compile_time: spec/compile_time.ç $(headers) compiler
+	./çc $< > objs/.tmp_$@.c
+	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@   
+
+match: spec/match.ç $(headers) compiler
+	./çc $< > objs/.tmp_$@.c
+	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@   
 
 test: all 
 	./objs/core_syntax

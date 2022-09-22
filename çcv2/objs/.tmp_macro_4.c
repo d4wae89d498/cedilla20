@@ -1,24 +1,31 @@
 #include "cedilla.h"
-
-char *cedilla_macro_4(char **src, parser_ctx *ctx) { 
-    if (!strncmp(*src, "__TEST44__", 10))
+#define main main4242
+#undef IDE_COMPAT
+#define IDE_COMPAT 0
+char *cedilla_macro_4(macro_list **macros, char **src, parser_ctx *ctx) { 
+    if (!ctx_is_code(*ctx) && !strncmp(*src, "comment_compile_time_assert_str_eq", 34))
     {
-        *src += 10;
-        return "12";
-    }
-
-    if (ctx->is.comments)
-    {
-        fprintf(stderr, "comments %c [%.10s][%s] %i\n", **src, *src,"42", strncmp(*src, "42", 9));
-        if (!strncmp(*src, "42", 10))
+        *src += 34;
+        while (isspace(**src))
+            *src += 1;
+        try_apply_macros(macros, src, ctx);
+        int a = 0;
+        while (isdigit(**src))
         {
-            printf("-\n");
+            a *= 10;
+            a += **src - '0';
+            *src += 1;
         }
-    }
-    if (ctx->is.comments && !strncmp(*src, "42", 10))
-    {
-        *src += 10;
-        return "12";
+        while (isspace(**src))
+            *src += 1;
+        int b = 0;
+        while (isdigit(**src))
+        {
+            b *= 10;
+            b += **src - '0';
+            *src += 1;
+        }
+        assert(a == b);
     }
     return (0);
  }
