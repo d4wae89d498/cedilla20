@@ -14,4 +14,5 @@ See also :
 - [The Katahdin programming languages designed by Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
 - [Modern Extensible Languages, Daniel Zingaro, 2007](http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport47.pdf) 
 - [Extending Syntax from Within a Language, Bob Nystrom, 2011](http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/)
+- [Honu: Syntactic Extension for Algebraic Notation through Enforestatio, Jon Rafkind, 2012](https://www.cs.utah.edu/plt/publications/gpce12-rf.pdf)
 
