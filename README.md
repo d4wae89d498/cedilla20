@@ -1,4 +1,4 @@
-*Le C-Cédille* est un *langage de programmation extensible*, visant le C pour la génération des sources du compilateurs intermédiaire ainsi que pour la génération des sources du programme.
+*Le C-Cédille* est un *langage de programmation extensible*, visant le C pour la génération des sources des compilateurs intermédiaire ainsi que pour la génération des sources du programme.
 
 Partant du constat que les systèmes de macro du C et du Rust ne permettent pas d'avoir des variables pendant la phase de compilation, ils ne permettent donc pas de donner aux développeurs les outils nécessaires pour la meta-programmation et donc pour la programmation extensible. D'autres préprocesseurs plus puissants tels que le M4 ou le PHP pourraient alors remplacer le préprocesseur du C ou du Rust, mais cela reviendrait donc à utiliser un autre language qui serait donc incompatible avec les macros implémentées et cela ne comblerait pas les besoins d'extensibilité.
 
