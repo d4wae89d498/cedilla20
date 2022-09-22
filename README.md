@@ -8,6 +8,10 @@
                     features desgined as *a C super-set*. 
 
 
-Academic resources : 
+See also : 
 
-- Daniel Zingaro, 2007 - http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport47.pdf 
+- [The Nemerle programming language designed, Jetbrains, 2003](https://github.com/rsdn/nemerle/wiki/Syntax-extensions)
+- [The Katahdin programming languages designed by Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
+- [Modern Extensible Languages, Daniel Zingaro, 2007](http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport47.pdf) 
+- [Extending Syntax from Within a Language, Bob Nystrom, 2011](http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/)
+
