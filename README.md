@@ -10,8 +10,8 @@
 
 Academic Resources : 
 
-- [The Nemerle programming language designed, Jetbrains, 2003](https://github.com/rsdn/nemerle/wiki/Syntax-extensions)
-- [The Katahdin programming languages designed by Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
+- [The Nemerle programming language, Jetbrains, 2003](https://github.com/rsdn/nemerle/wiki/Syntax-extensions)
+- [The Katahdin programming language, Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
 - [Modern Extensible Languages, Daniel Zingaro, 2007](http://www.cas.mcmaster.ca/sqrl/papers/SQRLreport47.pdf) 
 - [Extending Syntax from Within a Language, Bob Nystrom, 2011](http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/)
 - [The Anvil programming language, Leslie Schultz, Rich Arriaga, Todd L. Smith, Mark van Gulik, 2012](https://www.availlang.org/about-avail/introduction/index.html)
