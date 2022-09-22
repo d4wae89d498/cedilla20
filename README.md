@@ -1,8 +1,8 @@
-*Le C-Cédille* est un langage de programmation extensible, visant le C pour la génération des compilateurs intermédiaire ainsi que pour la génération du code source du programme.
+*Le C-Cédille* est un *langage de programmation extensible*, visant le C pour la génération des compilateurs intermédiaire ainsi que pour la génération du code source du programme.
 
 Partant du constat que les systèmes de macro du C et du Rust ne permettent pas d'avoir des variables pendant la phase de compilation, ils ne permettent donc pas de donner aux développeurs les outils nécessaires pour la meta-programmation et donc pour la programmation extensible. D'autres préprocesseurs plus puissants tels que le M4 ou le PHP pourraient alors remplacer le préprocesseur du C ou du Rust, mais cela reviendrait donc à utiliser un autre language qui serait donc incompatible avec les macros implémentées et cela ne comblerait pas les besoins d'extensibilité.
 
-Démo:
+*Démo:*
 
 ```C
 macro
@@ -31,7 +31,7 @@ int main()
 }
 ````
 
-Objectifs:
+*Objectifs:*
 
 - [x] *list*        is a linked list
 - [x] *object*      is a struct that associate a name, along with a type and a value, a destructor and a cloner
@@ -43,9 +43,9 @@ Objectifs:
                     features desgined as *a C super-set*. 
 
 
-Ressources académiques: 
+*Ressources sur le même sujet:*
 
-- [Coq, INRIA, 1984](https://coq.inria.fr/refman/user-extensions/syntax-extensions.html)
+- [Coq syntax extensions and notation scopes, INRIA, 1984](https://coq.inria.fr/refman/user-extensions/syntax-extensions.html)
 - [Extending the syntax of OCaml, Daniel de Rauglaudre, INRIA, 2003](https://caml.inria.fr/pub/docs/tutorial-camlp4/tutorial007.html)
 - [The Nemerle programming language, Jetbrains, 2003](https://github.com/rsdn/nemerle/wiki/Syntax-extensions)
 - [The Katahdin programming language, Chris Seaton, 2007](https://github.com/chrisseaton/katahdin/blob/master/demos/factorial.kat)
@@ -53,6 +53,3 @@ Ressources académiques:
 - [Extending Syntax from Within a Language, Bob Nystrom, 2011](http://journal.stuffwithstuff.com/2011/02/13/extending-syntax-from-within-a-language/)
 - [The Anvil programming language, Leslie Schultz, Rich Arriaga, Todd L. Smith, Mark van Gulik, 2012](https://www.availlang.org/about-avail/introduction/index.html)
 - [Honu: Syntactic Extension for Algebraic Notation through Enforestation, Jon Rafkind, 2012](https://www.cs.utah.edu/plt/publications/gpce12-rf.pdf)
-
-
-
