@@ -237,4 +237,8 @@ int main()
 
     printf("OK\n");
 }
+// todo: avoid incompatible macro usage with
+// - language x [extends y] 
+
+
 #endif
