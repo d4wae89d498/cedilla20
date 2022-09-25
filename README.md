@@ -40,7 +40,26 @@ int main()
                     current limitation of : $ çc [args] [file.c]. It provides a dynamic macro and syntax system.
 - [x] *match*       is a macro built on top of çc for easier source file parsing
 - [ ] *ç*           is a standard library built with the çc command, providing c-pre-processor implementations, along with a series of
-                    features desgined as *a C super-set*. 
+                    features desgined as *a C super-set*
+
+*Std dep tree:*
+
+- include_primitive
+- match 
+- language_primitive
+- c99
+- cpp
+- ç 
+    - compile_time 
+    - module
+    - lambda
+    - defer
+    - async
+    - meta
+    - safety / iterators
+    - classes / interfaces
+    - sql
+    - hardware
 
 
 *Ressources sur le même sujet:*

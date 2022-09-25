@@ -1,0 +1,12 @@
+
+
+macro 
+{
+    // compiler.c shall set #line  filename to the current .ç file and line in the intermediate compilers
+    /*
+    if (match(skip(stris("TESTM( ... )) 
+    */
+    return "macro {}" 
+}
+
+TESTM(); // but the macro will be registred here, so current line and file would be this position and thats normal

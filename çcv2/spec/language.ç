@@ -1,0 +1,5 @@
+macro 
+{
+    // for each macros, keep only compatible ones ...
+    return try_apply_macro .... with new macros
+}
