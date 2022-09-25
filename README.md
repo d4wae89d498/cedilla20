@@ -31,7 +31,7 @@ int main()
 }
 ````
 
-*Ordre des deps :*
+*Ordre des dépendances (une dépendance peut exclusivement s'appuyer sur celles du dessus) :*
 
 - [x] list 
 - [x] object    
