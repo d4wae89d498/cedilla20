@@ -1,5 +1,5 @@
+#include <stdio.h>
 #include "object.h"
-#include "stdio.h"
 
 object *_object_new(char *type, char *key, long long value)
 {

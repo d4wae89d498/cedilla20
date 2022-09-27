@@ -6,6 +6,7 @@
         "mman.h": "c",
         "match.h": "c",
         "__locale": "c",
-        "object.h": "c"
+        "object.h": "c",
+        "object_list.h": "c"
     }
 }

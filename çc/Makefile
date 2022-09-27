@@ -16,7 +16,7 @@ $(NAME): çc.c $(DEPS) compiler.o
 re: fclean all
 
 clean:
-	rm -rf compiler.o
+	rm -rf compiler.o çc.dSYM
 
 fclean: clean
 	rm -rf $(NAME) 

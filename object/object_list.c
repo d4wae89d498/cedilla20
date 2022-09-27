@@ -1,5 +1,6 @@
+#include <stdio.h>
 #include "object_list.h"
-#include "stdio.h"
+
 
 object_list *olist_last(object_list *l)
 {
