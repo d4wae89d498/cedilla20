@@ -2,22 +2,57 @@
 
 const char *help = "Type çc --help for help.\n";
 const char *itermediate_file = "./tmp_cedilla_intermediate_output.c";
+const char *default_cc = "cc";
+
+static int     is_code(compiler_ctx ctx)
+{
+    (void) ctx;
+    return (1);
+} 
+
+static int     is_root(compiler_ctx ctx)
+{
+    (void) ctx;
+    return (1);
+}
 
 static compiler_ctx parse_args(int ac, char **av)
 {
-    compiler_ctx o;
-    o.compile_c = true;
-    o.cc = DEFAULT_CC;
+    compiler_ctx o = {
+        .file = 0,
+        .defines = 0,
+        .include_dirs = 0,
+        .macros = 0,
+        .line = 0,
+        .column = 0,
+        .ol = 0,
+        .macro_count = 0,
+        .macro_depth = 0,
+        .compile_c = true,
+        .cc = default_cc,
+        .is_code = is_code,
+        .is_root = is_root
+    };
     int i = 1;
     while (i < ac)
     {
         if (av[i][0] != '-')
-            exit(fprintf(stderr, "Error, unknow çc flag : %s\n%s", av[i], help) && 1);
-        if (!strcmp(av[i], "-CC"))
+        {
+            if (o.file)
+            {
+                free_compiler(o);
+                USAGE_ERROR_EXIT("Error, only one file is supported by the çc command.\n%s", help); 
+            }
+            o.file = av[i];
+        }
+        else if (!strcmp(av[i], "-CC"))
         {
             i += 1;
             if (i >= ac)
-                exit (printf(stderr, "Error, expected <value> after -CC\n%s", help) && 1);
+            {
+                free_compiler(o);
+                USAGE_ERROR_EXIT("Error, expected <value> after -CC\n%s", help);
+            }    
             o.cc = av[i];
         }
         else if (av[i][1] == 'D')
@@ -25,16 +60,18 @@ static compiler_ctx parse_args(int ac, char **av)
             char **item = malloc(2 * sizeof(char*));
             if (!item)
             {
-                list_free(o.defines, free);
-                list_free(o.include_dirs, free);
-                ERROR("malloc");
+                free_compiler(o);
+                SYSTEM_ERROR_EXIT("malloc");
             }
             int k = 0;
             if (!av[i][2] && ++i >= ac)
-                exit (printf(stderr, "Error, expected <macro>=<value> after -D\n%s", help) && 1);   
+            {
+                free_compiler(o);
+                USAGE_ERROR_EXIT("Error, expected <macro>=<value> after -D\n%s", help);   
+            }
             else 
                 k += 2;
-            (*item)[0] = av[i];
+            (item)[0] = av[i];
             while(av[i][k])
             {
                 if (av[i][k] == '=')
@@ -45,13 +82,12 @@ static compiler_ctx parse_args(int ac, char **av)
                 }   
                 k += 1;
             }
-            (*item)[1] = (av[i][k]) ? &(av[i][k]) : "1";
-            if (!list_add(o.defines, item))
+            (item)[1] = (av[i][k]) ? &(av[i][k]) : "1";
+            if (!list_add(&(o.defines), item))
             {
                 free(item);
-                list_free(o.defines, free);
-                list_free(o.include_dirs, free);
-                ERROR("list_add::malloc");  
+                free_compiler(o);
+                SYSTEM_ERROR_EXIT("list_add::malloc");  
             }
         }
         else if (av[i][1] == 'E')
@@ -63,16 +99,18 @@ static compiler_ctx parse_args(int ac, char **av)
             {
                 i += 1;
                 if (i >= ac)
-                    exit (printf(stderr, "Error, expected <dir> after -I\n%s", help) && 1);
+                {
+                    free_compiler(o);
+                    USAGE_ERROR_EXIT("Error, expected <dir> after -I\n%s", help);
+                }
                 include_dir = av[i];
             }
             else 
                 include_dir = &(av[i][2]);
-            if (!list_add(o.include_dirs, include_dir))
+            if (!list_add(&(o.include_dirs), include_dir))
             {
-                list_free(o.defines, free);
-                list_free(o.include_dirs, free);
-                ERROR("list_add::malloc");  
+                free_compiler(o);
+                SYSTEM_ERROR_EXIT("list_add::malloc");  
             }
         }
         else if (!strcmp(av[i], "--help"))
@@ -84,30 +122,34 @@ static compiler_ctx parse_args(int ac, char **av)
                 "-o <value>             "
                 "--help                 Display available options\n"
             ) && 0);
+        else 
+        {
+            free_compiler(o);
+            USAGE_ERROR_EXIT("Error, unknow çc flag : %s\n%s", av[i], help);
+        }
         i += 1;
     }
- 
     return (o);
 }
 
 /*
  * Exit codes : 
  *  0 - Normal exit
- *  1 - Usage error
- *  2 - System error
+ *  1 - Usage error (USAGE_ERROR_CODE)
+ *  2 - System error (SYSTEM_ERROR_CODE)
  */
 int main(int ac, char **av)
 {
     compiler_ctx    ctx = parse_args(ac, av);
-    int             fd = open (av[1], O_RDONLY);
+    int             fd = open(ctx.file, O_RDONLY);
     if (fd < 0)
-        ERROR("open");
+        SYSTEM_ERROR_EXIT("open");
     int             len = lseek(fd, 0, SEEK_END);
     char            *str = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
     if (str == MAP_FAILED)
     {
         close (fd);
-        ERROR("mmap");
+        SYSTEM_ERROR_EXIT("mmap");
     }
     char            *new_str = 0;
     while (*str)
@@ -115,8 +157,10 @@ int main(int ac, char **av)
         try_register_macros(&ctx, &str); 
         if (!try_apply_macros(&ctx, &str))
         {
+            char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
-            cursor_incr(&str, &ctx, 1);       
+            free(swp);
+            cursor_incr(&ctx, &str, 1);       
         }
     }
     if (!ctx.compile_c)
@@ -124,7 +168,7 @@ int main(int ac, char **av)
     else 
     {
         char *cmd;
-        asprintf("echo <<<\"EOF\"\n"
+        asprintf(&cmd, "echo <<<\"EOF\"\n"
                  "%s\n"
                  "EOF >> %s && %s %s; rm -f %s;", new_str, itermediate_file, ctx.cc, itermediate_file, itermediate_file);
         free(cmd);

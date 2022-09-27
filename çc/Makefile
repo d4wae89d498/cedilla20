@@ -1,37 +1,22 @@
-re: clean all
+CFLAGS 	= -Wall -Werror -Wextra -I../list -I../object -g
+CLIBS  	= -L../list -llist -L../object -lobject
+DEPS	= Makefile ../list/liblist.a ../object/libobject.a compiler.h
+NAME   	= çc
 
-headers=compiler.h
+.SUFFIXES:
 
-all: compiler test
+all: $(NAME)
 
-compiler: çc.c 
-	cc -g çc.c -o çc 
+$(NAME): çc.c $(DEPS) compiler.o
+	cc $(CFLAGS) $(CLIBS) -g çc.c -o $@ compiler.o
 
-test: core_syntax
-
-core_syntax: spec/core_syntax.ç $(headers) compiler
-	./çc $< > objs/.tmp_$@.c
-	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@
-
-c99: spec/c99.ç $(headers) compiler
-	./çc $< > objs/.tmp_$@.c
-	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@ 
-
-compile_time: spec/compile_time.ç $(headers) compiler
-	./çc $< > objs/.tmp_$@.c
-	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@   
-
-match: spec/match.ç $(headers) compiler
-	./çc $< > objs/.tmp_$@.c
-	cc -DIDE_COMPAT=0 -DTEST=1 -I. objs/.tmp_$@.c -o objs/$@   
-
-run-test: test 
-	./objs/core_syntax
+%.o: %.c 
+	cc $(CFLAGS) -c $< -o $@
 
 re: fclean all
 
 clean:
-	rm -rf ./objs/* *.o *.so *.a *.out *.dSYM
+	rm -rf compiler.o
 
 fclean: clean
-	rm -rf çc
+	rm -rf $(NAME) 
