@@ -158,16 +158,18 @@ int main(int ac, char **av)
         k = try_register_macros(&ctx, &str);
         if (k < 0)
         {
+            free(new_str);
             free_compiler(ctx);
             exit(k);
         }
         k = try_apply_macros(&ctx, &str);
         if (k < 0)
         {
+            free(new_str);
             free_compiler(ctx);
             exit(k);
         }
-        if (!k)
+        else if (!k)
         {
             char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
