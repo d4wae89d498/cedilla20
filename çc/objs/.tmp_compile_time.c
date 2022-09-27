@@ -1,4 +1,4 @@
-#include "../cedilla.h"
+#include "../compiler.h"
 
 #include "../spec/c99.ç"
 

@@ -1,9 +1,9 @@
-#include "cedilla.h"
+#include "compiler.h"
 #define main main4242
 #undef IDE_COMPAT
 #define IDE_COMPAT 0
-char *cedilla_macro_4(macro_list **macros, char **src, parser_ctx *ctx) { 
-    if (!ctx_is_code(*ctx) && !strncmp(*src, "comment_compile_time_assert_str_eq", 34))
+char *cedilla_macro_4(macro_list **macros, char **src, compiler_ctx *ctx) { 
+    if (!is_code(*ctx) && !strncmp(*src, "comment_compile_time_assert_str_eq", 34))
     {
         *src += 34;
         while (isspace(**src))

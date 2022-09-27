@@ -1,6 +1,6 @@
 re: clean all
 
-headers=cedilla.h
+headers=compiler.h
 
 all: compiler test
 

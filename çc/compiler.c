@@ -3,17 +3,17 @@
 /******************/
 // shall be implemented by a macro def
 
-int     ctx_is_code(parser_ctx ctx)
+int     is_code(compiler_ctx ctx)
 {
   return (1);//  return (!ctx.is.comment && !ctx.is.comments && !ctx.is.chr && !ctx.is.str);
 } 
 
-int     ctx_is_root(parser_ctx ctx)
+int     is_root(compiler_ctx ctx)
 {
-    return (1);// return (ctx_is_code(ctx) && !ctx.levels.parentheses && !ctx.levels.brackets && !ctx.levels.braces);
+    return (1);// return (is_code(ctx) && !ctx.levels.parentheses && !ctx.levels.brackets && !ctx.levels.braces);
 }
 /*****************/
-char *format_fname(int count)
+char *format_file_name(int count)
 {
     char    *str;
 
@@ -21,7 +21,7 @@ char *format_fname(int count)
     return str;
 }
 
-char *format_lname(int count)
+char *format_library_name(int count)
 {
     char    *str;
 
@@ -29,7 +29,7 @@ char *format_lname(int count)
     return str;
 }
 
-char *format_mname(int count)
+char *format_macro_name(int count)
 {
     char    *str;
 
@@ -37,7 +37,7 @@ char *format_mname(int count)
     return str;
 }
 
-int     cursor_incr(char **str, parser_ctx *ctx, int i)
+int     cursor_incr(compiler_ctx *ctx, char **str, int i)
 {
     int     y;
 
@@ -63,7 +63,7 @@ int     cursor_incr(char **str, parser_ctx *ctx, int i)
     return (y);
 }
 
-void *compile_macro(char *str, parser_ctx *ctx)
+void *compile_macro(compiler_ctx *ctx, char *str)
 {
     int     fd;
     char    *cmd;
@@ -72,36 +72,36 @@ void *compile_macro(char *str, parser_ctx *ctx)
 
 //    printf("");
 
-    fd = open(format_fname(macro_count), O_WRONLY | O_CREAT | O_TRUNC, 0777);
+    fd = open(format_file_name(macro_count), O_WRONLY | O_CREAT | O_TRUNC, 0777);
     dprintf(fd, 
-        "#include \"cedilla.h\"\n"
+        "#include \"compiler.h\"\n"
         "#define main main4242\n"
         "#undef IDE_COMPAT\n"
         "#define IDE_COMPAT 0\n"
-        "char *%s(macro_list **macros, char **src, parser_ctx *ctx) { %s }\n",
-        format_mname(macro_count),
+        "char *%s(macro_list **macros, char **src, compiler_ctx *ctx) { %s }\n",
+        format_macro_name(macro_count),
         str
     );
     close(fd);
-    asprintf(&cmd, "cc -DIDE_COMPAT=0 -I. -shared -fPIC -o %s %s\n", format_lname(macro_count), format_fname(macro_count));
+    asprintf(&cmd, "cc -DIDE_COMPAT=0 -I. -shared -fPIC -o %s %s\n", format_library_name(macro_count), format_file_name(macro_count));
     system(cmd);
 
-    void *handle = dlopen (format_lname(macro_count), RTLD_LAZY);
+    void *handle = dlopen (format_library_name(macro_count), RTLD_LAZY);
     if (!handle) {
-        fprintf (stderr, "Unable to load macro '%s'. Reason=%s\n", format_lname(macro_count), dlerror());
+        fprintf (stderr, "Unable to load macro '%s'. Reason=%s\n", format_library_name(macro_count), dlerror());
         exit(1);
     }
     dlerror();    /* Clear any existing error */
-    void *r = dlsym(handle, format_mname(macro_count));
+    void *r = dlsym(handle, format_macro_name(macro_count));
     char *error;
     if ((error = dlerror()) != NULL)  {
-        fprintf (stderr, "Unable to load macro func '%s' within '%s' Reason=%s\n", format_mname(macro_count), format_lname(macro_count), error);
+        fprintf (stderr, "Unable to load macro func '%s' within '%s' Reason=%s\n", format_macro_name(macro_count), format_library_name(macro_count), error);
         exit(1);
     }
     return r;
 }
 
-static void register_macro(macro_list **macros, char *str, parser_ctx *ctx)
+static void register_macro(compiler_ctx *ctx, char *str)
 {
     macro_list *it;
 
@@ -128,7 +128,7 @@ static void register_macro(macro_list **macros, char *str, parser_ctx *ctx)
     }
 }
 
-int     try_apply_macros(macro_list **macros, char **str, parser_ctx *ctx)
+int     try_apply_macros(compiler_ctx *ctx, char **str)
 {
     macro_list  *it;
     char        *prefix;
@@ -152,12 +152,12 @@ int     try_apply_macros(macro_list **macros, char **str, parser_ctx *ctx)
     return (0);
 }
 
-int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
+int    try_register_macros(compiler_ctx *ctx, char **str)
 {
     int r;
 
     r = 0;
-    if (!ctx_is_root(*ctx))
+    if (!is_root(*ctx))
         return (0);
      if (strncmp(*str , "macro", 5))
         return (0);
@@ -168,7 +168,7 @@ int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
     {
         r += cursor_incr(str, ctx, 1);
     }
-    if (**str != '{')
+    if (**str != '{') // try apply macro here n4
     {
         printf("ERROR: '{' expected at line %i and col %i\n", ctx->levels.lines, ctx->levels.columns);
         exit(1);
@@ -183,11 +183,11 @@ int    try_register_macros(macro_list **macros, char **str, parser_ctx *ctx)
             asprintf(&new_str, "%s%c", new_str ? new_str : "", **str);
             r += cursor_incr(str, ctx, 1);       
         }
-        if (**str == '{' && ctx_is_code(*ctx))
+        if (**str == '{' && is_code(*ctx))
         {
             ctx->levels.braces += 1;
         }
-        if (**str == '}' && ctx_is_code(*ctx))
+        if (**str == '}' && is_code(*ctx))
         {
             ctx->levels.braces -= 1;
             if (!ctx->levels.braces)

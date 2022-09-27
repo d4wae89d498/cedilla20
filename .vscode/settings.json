@@ -1,9 +1,11 @@
 {
     "files.associations": {
         "libc.h": "c",
-        "cedilla.h": "c",
+        "compiler.h": "c",
         "*.ç": "c",
         "mman.h": "c",
-        "match.h": "c"
+        "match.h": "c",
+        "__locale": "c",
+        "object.h": "c"
     }
 }

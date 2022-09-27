@@ -1,4 +1,4 @@
-#include "../cedilla.h"
+#include "../compiler.h"
 
 #if IDE_COMPAT
 # define compile_time
@@ -8,7 +8,7 @@
 
 macro 
 {
-    if (ctx_is_root(*ctx))
+    if (is_root(*ctx))
     {
         char *new_src = "";
         if (!strncmp(*src, "compile_time", 12) && isspace(*(*src + 12)))

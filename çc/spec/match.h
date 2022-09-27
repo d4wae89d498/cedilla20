@@ -1,9 +1,9 @@
-#include "cedilla.h"
+#include "compiler.h"
 
-typedef int (*until)(macro_list **macros, parser_ctx *ctx, char **str);
+typedef int (*until)(macro_list **macros, compiler_ctx *ctx, char **str);
 
 #define parse(...)   _parse(macros, ctx, src, __VA_ARGS__)
-int     _parse(macro_list **l, parser_ctx *ctx, char **src, char *str)
+int     _parse(macro_list **l, compiler_ctx *ctx, char **src, char *str)
 {
     int r;
 
@@ -14,7 +14,7 @@ int     _parse(macro_list **l, parser_ctx *ctx, char **src, char *str)
 }
 
 #define issep()      _issep(macros, ctx, src) 
-int     _issep(macro_list **l, parser_ctx *ctx, char **src)
+int     _issep(macro_list **l, compiler_ctx *ctx, char **src)
 {
     int r;
 
@@ -28,13 +28,13 @@ int     _issep(macro_list **l, parser_ctx *ctx, char **src)
 }
 
 #define skip(...)   _skip(macros, ctx, src, __VA_ARGS__)
-int     _skip(macro_list **l, parser_ctx *ctx, char **src, int n)
+int     _skip(macro_list **l, compiler_ctx *ctx, char **src, int n)
 {
     return cursor_incr(src, ctx, n);
 }
 
 #define isstr(...)   _isstr(macros, ctx, src, __VA_ARGS__)
-int     _isstr(macro_list **l, parser_ctx *ctx, char **src, char *str)
+int     _isstr(macro_list **l, compiler_ctx *ctx, char **src, char *str)
 {
     int sl;
 
@@ -47,7 +47,7 @@ int     _isstr(macro_list **l, parser_ctx *ctx, char **src, char *str)
 }
 
 #define capture(...)   _capture(macros, ctx, src, __VA_ARGS__)
-int     _capture(macro_list **l, parser_ctx *ctx, char **src, char **buffer, until stop)
+int     _capture(macro_list **l, compiler_ctx *ctx, char **src, char **buffer, until stop)
 {
     int cl = 0;
 
@@ -97,11 +97,11 @@ macro_list     *macro_add(macro_list **l, macro_list *v)
 
 #define cedilla_match_end -4242
 #define match(...)   _match(macros, ctx, src, __VA_ARGS__, cedilla_match_end)
-int _match(macro_list **macros, parser_ctx *ctx, char **src, ...)
+int _match(macro_list **macros, compiler_ctx *ctx, char **src, ...)
 {
     macro_list  *new_macros;
     macro_list  *it;
-    parser_ctx  new_ctx;
+    compiler_ctx  new_ctx;
     char        *new_src;
     va_list     ap;
     int         n;
