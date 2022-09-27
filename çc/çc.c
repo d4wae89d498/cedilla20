@@ -154,8 +154,22 @@ int main(int ac, char **av)
     char            *new_str = 0;
     while (*str)
     {
-        try_register_macros(&ctx, &str); 
-        if (!try_apply_macros(&ctx, &str))
+        int k;
+        k = try_register_macros(&ctx, &str);
+        if (k < 0)
+        {
+            free(str);
+            free_compiler(ctx);
+            exit(k);
+        }
+        k = try_apply_macros(&ctx, &str);
+        if (k < 0)
+        {
+            free(str);
+            free_compiler(ctx);
+            exit(k);
+        }
+        if (!k)
         {
             char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
