@@ -111,14 +111,18 @@ void *compile_macro(compiler_ctx *ctx, char *str)
         fprintf(stderr, "dprintf\n");
         return (0);
     }
+    free(macro_name);
     close(fd);
     asprintf(&cmd, "cc -DIDE_COMPAT=0 -I. -shared -fPIC -o %s %s\n", library_name, file_name);
+    free(library_name);
+    free(file_name);
     if (!cmd)
     {
         fprintf(stderr, "malloc\n");
         return (0);
     }
     k = system(cmd);
+    free(cmd);
     if (k < 0)
     {
         fprintf(stderr, "system\n");
@@ -129,7 +133,6 @@ void *compile_macro(compiler_ctx *ctx, char *str)
         fprintf(stderr, "Macro compilation error=%i\n", k);
         return (0);
     }
-    free(cmd);
     void *handle = dlopen (format_library_name(ctx->macro_count), RTLD_LAZY);
     if (!handle) {
         fprintf (stderr, "Unable to load macro '%s'. Reason=%s\n", format_library_name(ctx->macro_count), dlerror());
@@ -282,10 +285,12 @@ int    try_register_macros(compiler_ctx *ctx, char **str)
     }
     if (braces_level)
     {
+        free(new_str);
         fprintf(stderr, "ERROR: '{' expected at line %i and col %i\n", ctx->line, ctx->column);
         return (-USAGE_ERROR_CODE);
     }
     int k = register_macro(ctx, new_str);
+    free(new_str);
     if (k)
         return (k);
     return (r);
