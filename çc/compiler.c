@@ -73,6 +73,7 @@ void *compile_macro(compiler_ctx *ctx, char *str)
     char    *file_name;
     char    *library_name;
     char    *macro_name;
+    int     k;
 
     fprintf(stderr, "compiling macro from file: %s ...\n", ctx->file);
     file_name = format_file_name(ctx->macro_count);
@@ -117,9 +118,15 @@ void *compile_macro(compiler_ctx *ctx, char *str)
         fprintf(stderr, "malloc\n");
         return (0);
     }
-    if (system(cmd) < 0)
+    k = system(cmd);
+    if (k < 0)
     {
         fprintf(stderr, "system\n");
+        return (0);
+    }
+    else if (k)
+    {
+        fprintf(stderr, "Macro compilation error=%i\n", k);
         return (0);
     }
     free(cmd);

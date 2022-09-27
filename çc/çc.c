@@ -4,15 +4,15 @@ const char *help = "Type çc --help for help.\n";
 const char *itermediate_file = "./tmp_cedilla_intermediate_output.c";
 const char *default_cc = "cc";
 
-static int     is_code(compiler_ctx ctx)
+static int is_code(compiler_ctx ctx)
 {
-    (void) ctx;
+    (void)ctx;
     return (1);
-} 
+}
 
-static int     is_root(compiler_ctx ctx)
+static int is_root(compiler_ctx ctx)
 {
-    (void) ctx;
+    (void)ctx;
     return (1);
 }
 
@@ -31,8 +31,7 @@ static compiler_ctx parse_args(int ac, char **av)
         .compile_c = true,
         .cc = default_cc,
         .is_code = is_code,
-        .is_root = is_root
-    };
+        .is_root = is_root};
     int i = 1;
     while (i < ac)
     {
@@ -41,7 +40,7 @@ static compiler_ctx parse_args(int ac, char **av)
             if (o.file)
             {
                 free_compiler(o);
-                USAGE_ERROR_EXIT("Error, only one file is supported by the çc command.\n%s", help); 
+                USAGE_ERROR_EXIT("Error, only one file is supported by the çc command.\n%s", help);
             }
             o.file = av[i];
         }
@@ -52,12 +51,12 @@ static compiler_ctx parse_args(int ac, char **av)
             {
                 free_compiler(o);
                 USAGE_ERROR_EXIT("Error, expected <value> after -CC\n%s", help);
-            }    
+            }
             o.cc = av[i];
         }
         else if (av[i][1] == 'D')
         {
-            char **item = malloc(2 * sizeof(char*));
+            char **item = malloc(2 * sizeof(char *));
             if (!item)
             {
                 free_compiler(o);
@@ -67,19 +66,19 @@ static compiler_ctx parse_args(int ac, char **av)
             if (!av[i][2] && ++i >= ac)
             {
                 free_compiler(o);
-                USAGE_ERROR_EXIT("Error, expected <macro>=<value> after -D\n%s", help);   
+                USAGE_ERROR_EXIT("Error, expected <macro>=<value> after -D\n%s", help);
             }
-            else 
+            else
                 k += 2;
             (item)[0] = av[i];
-            while(av[i][k])
+            while (av[i][k])
             {
                 if (av[i][k] == '=')
                 {
                     av[i][k] = 0;
                     k += 1;
-                    break ;
-                }   
+                    break;
+                }
                 k += 1;
             }
             (item)[1] = (av[i][k]) ? &(av[i][k]) : "1";
@@ -87,7 +86,7 @@ static compiler_ctx parse_args(int ac, char **av)
             {
                 free(item);
                 free_compiler(o);
-                SYSTEM_ERROR_EXIT("list_add::malloc");  
+                SYSTEM_ERROR_EXIT("list_add::malloc");
             }
         }
         else if (av[i][1] == 'E')
@@ -105,24 +104,24 @@ static compiler_ctx parse_args(int ac, char **av)
                 }
                 include_dir = av[i];
             }
-            else 
+            else
                 include_dir = &(av[i][2]);
             if (!list_add(&(o.include_dirs), include_dir))
             {
                 free_compiler(o);
-                SYSTEM_ERROR_EXIT("list_add::malloc");  
+                SYSTEM_ERROR_EXIT("list_add::malloc");
             }
         }
         else if (!strcmp(av[i], "--help"))
             exit(printf("OVERVIEW: çc extensible GPL implementation that targets C99.\n\nUSAGE: çc [options] <inputs>\n\nOPTIONS:\n"
-                "-CC <value>            Define the C compiler and its flags\n"
-                "-D <macro>=<value>     Define <macro> to <value> (or 1 if <value> omitted)\n"  
-                "-E                     Only run the preprocessor\n"
-                "-I <dir>               Add directory to include search path\n" 
-                "-o <value>             "
-                "--help                 Display available options\n"
-            ) && 0);
-        else 
+                        "-CC <value>            Define the C compiler and its flags\n"
+                        "-D <macro>=<value>     Define <macro> to <value> (or 1 if <value> omitted)\n"
+                        "-E                     Only run the preprocessor\n"
+                        "-I <dir>               Add directory to include search path\n"
+                        "-o <value>             "
+                        "--help                 Display available options\n") &&
+                 0);
+        else
         {
             free_compiler(o);
             USAGE_ERROR_EXIT("Error, unknow çc flag : %s\n%s", av[i], help);
@@ -140,32 +139,31 @@ static compiler_ctx parse_args(int ac, char **av)
  */
 int main(int ac, char **av)
 {
-    compiler_ctx    ctx = parse_args(ac, av);
-    int             fd = open(ctx.file, O_RDONLY);
+    compiler_ctx ctx = parse_args(ac, av);
+    int fd = open(ctx.file, O_RDONLY);
     if (fd < 0)
         SYSTEM_ERROR_EXIT("open");
-    int             len = lseek(fd, 0, SEEK_END);
-    char            *str = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
+    int len = lseek(fd, 0, SEEK_END);
+    char *base_str;
+    char *str = base_str = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
     if (str == MAP_FAILED)
     {
-        close (fd);
+        close(fd);
         SYSTEM_ERROR_EXIT("mmap");
     }
-    char            *new_str = 0;
+    char *new_str = 0;
     while (*str)
     {
         int k;
         k = try_register_macros(&ctx, &str);
         if (k < 0)
         {
-            free(str);
             free_compiler(ctx);
             exit(k);
         }
         k = try_apply_macros(&ctx, &str);
         if (k < 0)
         {
-            free(str);
             free_compiler(ctx);
             exit(k);
         }
@@ -174,20 +172,20 @@ int main(int ac, char **av)
             char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
             free(swp);
-            cursor_incr(&ctx, &str, 1);       
+            cursor_incr(&ctx, &str, 1);
         }
     }
     if (!ctx.compile_c)
         printf("%s", new_str);
-    else 
+    else
     {
         char *cmd;
         asprintf(&cmd, "echo <<<\"EOF\"\n"
-                 "%s\n"
-                 "EOF >> %s && %s %s; rm -f %s;", new_str, itermediate_file, ctx.cc, itermediate_file, itermediate_file);
+                       "%s\n"
+                       "EOF >> %s && %s %s; rm -f %s;",
+                 new_str, itermediate_file, ctx.cc, itermediate_file, itermediate_file);
         free(cmd);
     }
     free(new_str);
-    free(str);
     close(fd);
 }
