@@ -1,6 +1,4 @@
-#include "../compiler.h"
-
-#if TEST
+#include "compiler.h"
 
 macro 
 {
@@ -13,10 +11,10 @@ macro
 #endif
 macro
 {
-    if (!strncmp(*src, "__G1__", 6) && !ctx->is.str)
+    if (!strncmp(*src, "__G1__", 6))
     {
         *src += 6;
-        return "41";     
+        return strdup("41");     
     }
     return 0;
 }
@@ -26,7 +24,7 @@ macro
 #endif
 macro
 {
-    if (!strncmp(*src, "__G2__", 6) && !ctx->is.str)
+    if (!strncmp(*src, "__G2__", 6))
     {
         *src += 6;
         return strdup((char[7]) {'_', '_', 'G', '1', '_', '_', 0});     
@@ -40,4 +38,3 @@ int main()
     assert(__G2__ == 41);
     printf("OK\n"); 
 }
-#endif

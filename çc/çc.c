@@ -2,7 +2,6 @@
 
 const char *help = "Type çc --help for help.\n";
 const char *itermediate_file = "./tmp_cedilla_intermediate_output.c";
-const char *default_cc = "cc";
 
 static int is_code(compiler_ctx ctx)
 {
@@ -29,9 +28,11 @@ static compiler_ctx parse_args(int ac, char **av)
         .macro_count = 0,
         .macro_depth = 0,
         .compile_c = true,
-        .cc = default_cc,
+        .cc = DEFAULT_CC,
         .is_code = is_code,
-        .is_root = is_root};
+        .is_root = is_root,
+        .macro_applied = false
+    };
     int i = 1;
     while (i < ac)
     {
@@ -142,52 +143,82 @@ int main(int ac, char **av)
     compiler_ctx ctx = parse_args(ac, av);
     int fd = open(ctx.file, O_RDONLY);
     if (fd < 0)
+    {
+        free_compiler(ctx);
         SYSTEM_ERROR_EXIT("open");
+    }   
     int len = lseek(fd, 0, SEEK_END);
     char *base_str;
     char *str = base_str = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
     if (str == MAP_FAILED)
     {
         close(fd);
+        free_compiler(ctx);
         SYSTEM_ERROR_EXIT("mmap");
     }
     char *new_str = 0;
+    char *swp2;
     while (*str)
     {
         int k;
         k = try_register_macros(&ctx, &str);
         if (k < 0)
         {
+            if (ctx.macro_applied)
+                free(str);
             free(new_str);
             free_compiler(ctx);
             exit(k);
         }
+        swp2 = str;
         k = try_apply_macros(&ctx, &str);
         if (k < 0)
         {
+            if (ctx.macro_applied)
+                free(str);
             free(new_str);
             free_compiler(ctx);
             exit(k);
         }
         else if (!k)
         {
+            if (ctx.macro_applied)
+                free(swp2);
             char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
             free(swp);
             cursor_incr(&ctx, &str, 1);
         }
     }
+    int r = 0;
     if (!ctx.compile_c)
         printf("%s", new_str);
     else
     {
-        char *cmd;
-        asprintf(&cmd, "echo <<<\"EOF\"\n"
-                       "%s\n"
-                       "EOF >> %s && %s %s; rm -f %s;",
-                 new_str, itermediate_file, ctx.cc, itermediate_file, itermediate_file);
+        char *cmd = 0;
+        int fd_out = open(itermediate_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+        if (fd_out < 0)
+        {
+            fprintf(stderr, "open\n");
+            r = SYSTEM_ERROR_CODE;
+            goto end;
+        }
+        if (write(fd_out, "#line 1 \"", 9) < 0)             {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
+        if (write(fd_out, ctx.file, strlen(ctx.file)) < 0)  {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
+        if (write(fd_out, "\"\n", 2) < 0)                   {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
+        if (write(fd_out, new_str, strlen(new_str)) < 0)    {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
+        asprintf(&cmd, "%s %s; rm -f %s;", ctx.cc, itermediate_file, itermediate_file);
+        if (system(cmd) < 0)
+        {
+            fprintf(stderr, "system\n");
+            r = SYSTEM_ERROR_CODE;
+        }
+        end:
         free(cmd);
+        close(fd_out);
     }
     free(new_str);
     close(fd);
+    free_compiler(ctx);
+    return (r);
 }

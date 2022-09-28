@@ -1,5 +1,6 @@
 #include "compiler.h"
 
+
 void    free_compiler(compiler_ctx ctx)
 {
     list_free(ctx.defines, free);
@@ -11,7 +12,7 @@ void    free_compiler(compiler_ctx ctx)
         swp = it->next;
         dlclose(it->handle);
         free(it);
-        it = it->next;
+        it = swp;
     }
     olist_free(ctx.ol);
 }
@@ -95,6 +96,9 @@ void *compile_macro(compiler_ctx *ctx, char *str)
     fd = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
     if (fd < 0)
     {
+        free(file_name);
+        free(library_name);
+        free(macro_name);
         fprintf(stderr, "open\n");
         return (0);
     }
@@ -103,21 +107,32 @@ void *compile_macro(compiler_ctx *ctx, char *str)
         "#define main main4242\n"
         "#undef IDE_COMPAT\n"
         "#define IDE_COMPAT 0\n"
-        "char *%s(compiler_ctx *ctx, char **src) { %s }\n",
+        "char *%s(compiler_ctx *ctx, char **src)\n"
+        "{\n"
+            "(void) ctx;\n"
+            "(void) src;\n"
+            "#line %i \"%s\"\n"
+            "%s\n"
+        "}\n",
         macro_name,
+        ctx->line,
+        ctx->file,
         str
     ) < 0)
     {
+        free(file_name);
+        free(library_name);
+        free(macro_name);
         fprintf(stderr, "dprintf\n");
         return (0);
     }
     free(macro_name);
     close(fd);
-    asprintf(&cmd, "cc -DIDE_COMPAT=0 -I. -shared -fPIC -o %s %s\n", library_name, file_name);
-    free(library_name);
+    asprintf(&cmd, "%s -shared -fPIC -o %s %s\n", DEFAULT_CC, library_name, file_name);
     free(file_name);
     if (!cmd)
     {
+        free(library_name);
         fprintf(stderr, "malloc\n");
         return (0);
     }
@@ -125,37 +140,48 @@ void *compile_macro(compiler_ctx *ctx, char *str)
     free(cmd);
     if (k < 0)
     {
+        free(library_name);
         fprintf(stderr, "system\n");
         return (0);
     }
     else if (k)
     {
+        free(library_name);
         fprintf(stderr, "Macro compilation error=%i\n", k);
         return (0);
     }
-    void *handle = dlopen (format_library_name(ctx->macro_count), RTLD_LAZY);
+    void *handle = dlopen (library_name, RTLD_LAZY);
     if (!handle) {
-        fprintf (stderr, "Unable to load macro '%s'. Reason=%s\n", format_library_name(ctx->macro_count), dlerror());
+        free(library_name);
+        fprintf (stderr, "Unable to load macro '%s'. Reason=%s\n", library_name, dlerror());
         return (0);
     }
+    free(library_name);
     dlerror();
     return (handle);
 }
 
 static int register_macro(compiler_ctx *ctx, char *str)
 {
-    macro_list *it;
-
     void *handle = compile_macro(ctx, str); 
     if (!handle)
         return (-SYSTEM_ERROR_CODE);
-    void *item = dlsym(handle, format_macro_name(ctx->macro_count));
-    char *error;
-    if ((error = dlerror()) != NULL)  {
-        fprintf (stderr, "Unable to load macro func '%s' within '%s' Reason=%s\n", format_macro_name(ctx->macro_count), format_library_name(ctx->macro_count), error);
+    char *macro_name = format_macro_name(ctx->macro_count);
+    if (!macro_name)
+    {
+        fprintf(stderr, "malloc\n");
         dlclose(handle);
         return (-SYSTEM_ERROR_CODE);
     }
+    void *item = dlsym(handle, macro_name);
+    char *error;
+    if ((error = dlerror()) != NULL)  {
+        fprintf (stderr, "Unable to load macro func '%s' Reason=%s\n", macro_name, error);
+        free(macro_name);
+        dlclose(handle);
+        return (-SYSTEM_ERROR_CODE);
+    }
+    free(macro_name);
     if (!ctx->macros)
     {
         ctx->macros = malloc(sizeof(macro_list));
@@ -171,7 +197,7 @@ static int register_macro(compiler_ctx *ctx, char *str)
         ctx->macro_count += 1;
         return (0);
     }
-    it = ctx->macros;
+    macro_list *it = ctx->macros;
     while (1)
     {
         if (!it->next)
@@ -207,21 +233,33 @@ int     try_apply_macros(compiler_ctx *ctx, char **str)
         {
             swp = *str;
             asprintf(str, "%s%s", prefix, *str);
+            char *str2 = *str;
             if (!str)
             {
                 fprintf(stderr, "malloc\n");
                 return(-SYSTEM_ERROR_CODE);
             }
-            free(swp);
+            if (ctx->macro_applied)
+                free(swp);
+            ctx->macro_applied = true;
+            int prefix_len = strlen(prefix);
             free(prefix);
             ctx->macro_depth += 1;
             int x = try_register_macros(ctx, str); 
             if (x < 0)
+            {
+                free(str2);
                 return (x);
+            }
             int y = try_apply_macros(ctx, str);
             if (y < 0)
+            {
+                free(str2);
                 return (y);
-            return (strlen(prefix) + x + y);
+            }
+            if (y)
+                free(str2);
+            return (prefix_len + x + y);
         }
         it = it->next;
     }

@@ -1,4 +1,4 @@
-CFLAGS 	= -Wall -Werror -Wextra -I../list -I../object -g
+CFLAGS 	= -Wall -Werror -Wextra -I../list -I../object -DIDE_COMPAT=0 -g
 CLIBS  	= -L../list -llist -L../object -lobject
 DEPS	= Makefile ../list/liblist.a ../object/libobject.a compiler.h
 NAME   	= çc
