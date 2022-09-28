@@ -181,14 +181,14 @@ int main(int ac, char **av)
             exit(k);
         }
         else if (!k)
-        {
-            if (ctx.macro_applied)
-                free(swp2);
+        {   
             char *swp = new_str;
             asprintf(&new_str, "%s%c", new_str ? new_str : "", *str);
             free(swp);
             cursor_incr(&ctx, &str, 1);
         }
+    //        if (ctx.macro_applied)
+    //            free(swp2);
     }
     int r = 0;
     if (!ctx.compile_c)

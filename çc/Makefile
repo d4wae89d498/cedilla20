@@ -13,6 +13,11 @@ $(NAME): çc.c $(DEPS) compiler.o
 %.o: %.c 
 	cc $(CFLAGS) -c $< -o $@
 
+test: $(NAME)
+
+run-test: test
+	 ./çc spec/core_syntax.ç  && ./a.out
+
 re: fclean all
 
 clean:

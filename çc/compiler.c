@@ -239,8 +239,8 @@ int     try_apply_macros(compiler_ctx *ctx, char **str)
                 fprintf(stderr, "malloc\n");
                 return(-SYSTEM_ERROR_CODE);
             }
-            if (ctx->macro_applied)
-                free(swp);
+//            if (ctx->macro_applied)
+//                free(swp);
             ctx->macro_applied = true;
             int prefix_len = strlen(prefix);
             free(prefix);
