@@ -7,6 +7,9 @@
         "match.h": "c",
         "__locale": "c",
         "object.h": "c",
-        "object_list.h": "c"
+        "object_list.h": "c",
+        "ide_compat.h": "c",
+        "ostream": "c",
+        "*.tcc": "c"
     }
 }
