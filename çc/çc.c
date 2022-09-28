@@ -31,7 +31,9 @@ static compiler_ctx parse_args(int ac, char **av)
         .cc = DEFAULT_CC,
         .is_code = is_code,
         .is_root = is_root,
-        .macro_applied = false
+        .macro_applied = false,
+        .c = false,
+        .o = 0
     };
     int i = 1;
     while (i < ac)
@@ -55,6 +57,8 @@ static compiler_ctx parse_args(int ac, char **av)
             }
             o.cc = av[i];
         }
+        else if (av[i][1] == 'c')
+            o.c = true;
         else if (av[i][1] == 'D')
         {
             char **item = malloc(2 * sizeof(char *));
@@ -113,14 +117,30 @@ static compiler_ctx parse_args(int ac, char **av)
                 SYSTEM_ERROR_EXIT("list_add::malloc");
             }
         }
+        else if (av[i][1] == 'o')
+        {
+            if (!av[i][2])
+            {
+                i += 1;
+                if (i >= ac)
+                {
+                    free_compiler(o);
+                    USAGE_ERROR_EXIT("Error, expected <value> after -o\n%s", help);
+                }
+                o.o = av[i];
+            }
+            else
+                o.o = &(av[i][2]);
+        }
         else if (!strcmp(av[i], "--help"))
             exit(printf("OVERVIEW: çc extensible GPL implementation that targets C99.\n\nUSAGE: çc [options] <inputs>\n\nOPTIONS:\n"
-                        "-CC <value>            Define the C compiler and its flags\n"
+                        "-CC <value>            Define the C compiler and its flags (default is \"%s\")\n"
+                        "-c                     Only run preprocess, compile, and assemble steps\n"
                         "-D <macro>=<value>     Define <macro> to <value> (or 1 if <value> omitted)\n"
                         "-E                     Only run the preprocessor\n"
                         "-I <dir>               Add directory to include search path\n"
-                        "-o <value>             "
-                        "--help                 Display available options\n") &&
+                        "-o <value>             Write output to <file> (default is stdout if mixed with -E, or \"%s\")\n"
+                        "--help                 Display available options\n", DEFAULT_CC, DEFAULT_OUT) &&
                  0);
         else
         {
@@ -192,7 +212,30 @@ int main(int ac, char **av)
     }
     int r = 0;
     if (!ctx.compile_c)
-        printf("%s", new_str);
+    {
+        if (ctx.o)
+        {
+            int fd3 = open(ctx.o, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+            if (fd3 < 0)
+            {
+                fprintf(stderr, "open\n");
+                r = SYSTEM_ERROR_CODE;
+            }
+            else 
+            {
+                if (write(fd3, new_str, strlen(new_str) < 0))
+                {
+                    fprintf(stderr, "write\n");
+                    r = SYSTEM_ERROR_CODE; 
+                }
+                close(fd3);
+            }    
+        }
+        else 
+        {
+            printf("%s", new_str);
+        }
+    }
     else
     {
         char *cmd = 0;
@@ -207,7 +250,7 @@ int main(int ac, char **av)
         if (write(fd_out, ctx.file, strlen(ctx.file)) < 0)  {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
         if (write(fd_out, "\"\n", 2) < 0)                   {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
         if (write(fd_out, new_str, strlen(new_str)) < 0)    {fprintf(stderr, "write\n");r = SYSTEM_ERROR_CODE;goto end;}
-        asprintf(&cmd, "%s %s; rm -f %s;", ctx.cc, itermediate_file, itermediate_file);
+        asprintf(&cmd, "%s %s %s -o %s; rm -f %s;", ctx.cc, ctx.c ? "-c" : "", itermediate_file, ctx.o ? ctx.o : DEFAULT_OUT, itermediate_file);
         if (system(cmd) < 0)
         {
             fprintf(stderr, "system\n");

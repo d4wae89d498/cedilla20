@@ -15,6 +15,7 @@
 # define USAGE_ERROR_EXIT(...) exit(USAGE_ERROR_CODE * (fprintf(stderr, __VA_ARGS__) && 1));
 # define SYSTEM_ERROR_EXIT(K) exit(SYSTEM_ERROR_CODE * (fprintf(stderr, "%s:%i ERROR: %s failed, errno=%i\n", __FILE__, __LINE__, K, errno) && 1));
 # define DEFAULT_CC "cc -Wall -Werror -Wextra -I. -I../list -I../object -DIDE_COMPAT=0 -g"
+# define DEFAULT_OUT "a.out"
 
 struct s_compiler_ctx;
 typedef char *macro(struct s_compiler_ctx *ctx, char **str);
@@ -41,6 +42,8 @@ typedef struct s_compiler_ctx
     const char *cc;
     ctx_is *is_root;
     ctx_is *is_code;
+    char *o;
+    int c;
 } compiler_ctx;
 void free_compiler(compiler_ctx ctx);
 char *format_file_name(int count);
