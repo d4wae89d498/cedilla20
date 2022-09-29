@@ -28,7 +28,7 @@ typedef struct s_macro_list
 typedef int ctx_is(struct s_compiler_ctx);
 typedef struct s_compiler_ctx
 {
-    list /*of char*/ *include_dirs;
+    list /*of char**/ *include_dirs;
     list /*of char*[2]*/ *defines;
     macro_list *macros;
     object_list *ol;
