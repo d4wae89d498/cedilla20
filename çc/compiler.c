@@ -128,7 +128,7 @@ void *compile_macro(compiler_ctx *ctx, char *str)
     }
     free(macro_name);
     close(fd);
-    asprintf(&cmd, "%s -shared -fPIC -o %s %s\n", DEFAULT_CC, library_name, file_name);
+    asprintf(&cmd, "%s -shared -fPIC -o %s %s\n", ctx->cc, library_name, file_name);
     free(file_name);
     if (!cmd)
     {
